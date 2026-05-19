@@ -1,9 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../../components/common/Navbar';
-import Card from '../../components/common/Card';
-import Button from '../../components/common/Button';
-import Input from '../../components/common/Input';
 
 interface Note {
     id: string;
@@ -91,26 +87,302 @@ export default function BrowseNotes() {
         return matchesSearch && matchesCategory && matchesPrice;
     });
 
-    return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-            <Navbar />
+    const styles = `
+      .browse-container {
+        max-width: 1280px;
+        margin: 0 auto;
+      }
 
-            <div className="max-w-7xl mx-auto px-6 py-8">
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+      .browse-header {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+        gap: 10px;
+      }
+
+      @media (min-width: 768px) {
+        .browse-header {
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+      }
+
+      .browse-title {
+        font-size: 36px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+
+      .browse-subtitle {
+        color: #94a3b8;
+        margin-top: 4px;
+        font-size: 16px;
+      }
+
+      .filter-card {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(30, 41, 59, 1);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 32px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      }
+
+      .filter-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      @media (min-width: 768px) {
+        .filter-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+        .filter-search {
+          grid-column: span 2;
+        }
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(51, 65, 85, 0.8);
+        border-radius: 12px;
+        color: #ffffff;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+      }
+
+      .form-control::placeholder {
+        color: #64748b;
+      }
+      
+      .form-control option {
+        background: #0f172a;
+        color: #fff;
+      }
+
+      .results-count {
+        color: #94a3b8;
+        margin-bottom: 24px;
+        font-size: 14px;
+      }
+
+      .notes-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      @media (min-width: 768px) {
+        .notes-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .notes-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .note-card {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(30, 41, 59, 1);
+        border-radius: 16px;
+        padding: 24px;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      .note-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        border-color: rgba(99, 102, 241, 0.5);
+      }
+
+      .note-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+
+      .badge {
+        padding: 4px 12px;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge-subject {
+        background: rgba(59, 130, 246, 0.1);
+        color: #60a5fa;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+      }
+
+      .badge-free {
+        background: rgba(16, 185, 129, 0.1);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+
+      .badge-paid {
+        background: rgba(249, 115, 22, 0.1);
+        color: #fb923c;
+        border: 1px solid rgba(249, 115, 22, 0.2);
+      }
+
+      .note-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 12px;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .note-author {
+        font-size: 14px;
+        color: #94a3b8;
+        margin-bottom: 16px;
+      }
+
+      .note-meta-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        margin-bottom: 24px;
+        flex: 1;
+      }
+
+      .note-rating {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #fbbf24;
+        font-weight: 500;
+      }
+
+      .note-downloads {
+        color: #64748b;
+      }
+
+      .note-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: auto;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+        flex: 1;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background: #4f46e5;
+        color: #ffffff;
+        box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+      }
+
+      .btn-primary:hover {
+        background: #6366f1;
+      }
+
+      .btn-success {
+        background: #10b981;
+        color: #022c22;
+        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+      }
+
+      .btn-success:hover {
+        background: #34d399;
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 64px 24px;
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(30, 41, 59, 1);
+        border-radius: 16px;
+      }
+
+      .empty-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      .empty-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 8px;
+      }
+
+      .empty-desc {
+        color: #94a3b8;
+      }
+    `;
+
+    return (
+        <>
+            <style>{styles}</style>
+            <div className="browse-container">
+                <div className="browse-header">
                     <div>
-                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Browse Notes</h1>
-                        <p className="text-gray-600 dark:text-gray-400 mt-1">Discover high-quality study materials</p>
+                        <h1 className="browse-title">Browse Notes</h1>
+                        <p className="browse-subtitle">Discover high-quality study materials</p>
                     </div>
-                    <Link to="/upload">
-                        <Button variant="primary" className="mt-4 md:mt-0">+ Upload Your Notes</Button>
+                    <Link to="/upload" className="btn btn-primary" style={{ flex: 'none', padding: '12px 24px' }}>
+                        + Upload Your Notes
                     </Link>
                 </div>
 
                 {/* Filters */}
-                <Card className="mb-8">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div className="md:col-span-2">
-                            <Input
+                <div className="filter-card">
+                    <div className="filter-grid">
+                        <div className="filter-search">
+                            <input
+                                type="text"
+                                className="form-control"
                                 placeholder="Search by title, subject..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -118,7 +390,7 @@ export default function BrowseNotes() {
                         </div>
 
                         <select
-                            className="px-4 py-3 rounded-xl border border-gray-300 dark:bg-gray-800 dark:border-gray-600"
+                            className="form-control"
                             value={selectedCategory}
                             onChange={(e) => setSelectedCategory(e.target.value)}
                         >
@@ -128,7 +400,7 @@ export default function BrowseNotes() {
                         </select>
 
                         <select
-                            className="px-4 py-3 rounded-xl border border-gray-300 dark:bg-gray-800 dark:border-gray-600"
+                            className="form-control"
                             value={priceFilter}
                             onChange={(e) => setPriceFilter(e.target.value as 'All' | 'Free' | 'Paid')}
                         >
@@ -137,75 +409,70 @@ export default function BrowseNotes() {
                             <option value="Paid">Paid Only</option>
                         </select>
                     </div>
-                </Card>
+                </div>
 
                 {/* Results Count */}
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                <p className="results-count">
                     Showing {filteredNotes.length} notes
                 </p>
 
                 {/* Notes Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="notes-grid">
                     {filteredNotes.map((note) => (
-                        <Card key={note.id} className="hover:shadow-xl transition-all group">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs font-medium rounded-full">
+                        <div key={note.id} className="note-card">
+                            <div className="note-header">
+                                <div className="badge badge-subject">
                                     {note.subject}
                                 </div>
-                                <div className={`px-3 py-1 text-xs font-medium rounded-full ${note.price === 0
-                                        ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                                        : 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300'
-                                    }`}>
+                                <div className={`badge ${note.price === 0 ? 'badge-free' : 'badge-paid'}`}>
                                     {note.price === 0 ? 'FREE' : `₹${note.price}`}
                                 </div>
                             </div>
 
-                            <h3 className="font-semibold text-lg leading-tight mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
+                            <h3 className="note-title">
                                 {note.title}
                             </h3>
 
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                            <p className="note-author">
                                 By {note.uploadedBy}
                             </p>
 
-                            <div className="flex items-center justify-between text-sm">
-                                <div className="flex items-center gap-1">
+                            <div className="note-meta-flex">
+                                <div className="note-rating">
                                     ⭐ <span>{note.rating}</span>
                                 </div>
-                                <div className="text-gray-500">
+                                <div className="note-downloads">
                                     {note.downloads.toLocaleString()} downloads
                                 </div>
                             </div>
 
-                            <div className="mt-6 flex gap-3">
-                                <Link to={`/note/${note.id}`} className="flex-1">
-                                    <Button variant="outline" className="w-full">
-                                        View Details
-                                    </Button>
+                            <div className="note-actions">
+                                <Link to={`/note/${note.id}`} className="btn btn-secondary">
+                                    View Details
                                 </Link>
 
                                 {note.price === 0 ? (
-                                    <Button variant="success" className="flex-1">
+                                    <button className="btn btn-success">
                                         Download
-                                    </Button>
+                                    </button>
                                 ) : (
-                                    <Button variant="primary" className="flex-1">
+                                    <button className="btn btn-primary">
                                         Buy ₹{note.price}
-                                    </Button>
+                                    </button>
                                 )}
                             </div>
-                        </Card>
+                        </div>
                     ))}
                 </div>
 
                 {filteredNotes.length === 0 && (
-                    <Card className="text-center py-20">
-                        <p className="text-2xl mb-4">😔</p>
-                        <p className="text-xl font-medium">No notes found</p>
-                        <p className="text-gray-500 mt-2">Try changing your filters</p>
-                    </Card>
+                    <div className="empty-state">
+                        <p className="empty-icon">😔</p>
+                        <p className="empty-title">No notes found</p>
+                        <p className="empty-desc">Try changing your filters</p>
+                    </div>
                 )}
             </div>
-        </div>
+        </>
     );
 }

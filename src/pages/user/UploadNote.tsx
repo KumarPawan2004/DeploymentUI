@@ -1,9 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../components/common/Navbar';
-import Card from '../../components/common/Card';
-import Button from '../../components/common/Button';
-import Input from '../../components/common/Input';
 import toast from 'react-hot-toast';
 
 export default function UploadNote() {
@@ -75,80 +71,314 @@ export default function UploadNote() {
         }, 1500);
     };
 
-    return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-            <Navbar />
+    const styles = `
+      .upload-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 32px 24px;
+      }
 
-            <div className="max-w-3xl mx-auto px-6 py-10">
-                <Card className="shadow-xl">
-                    <h1 className="text-3xl font-bold text-center mb-2">Upload New Notes</h1>
-                    <p className="text-center text-gray-600 dark:text-gray-400 mb-8">
+      .upload-card {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(30, 41, 59, 1);
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      }
+
+      .upload-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #ffffff;
+        text-align: center;
+        margin-bottom: 8px;
+      }
+
+      .upload-subtitle {
+        color: #94a3b8;
+        text-align: center;
+        margin-bottom: 32px;
+        font-size: 16px;
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #e2e8f0;
+        margin-bottom: 8px;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 14px 16px;
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(51, 65, 85, 0.8);
+        border-radius: 12px;
+        color: #ffffff;
+        font-size: 15px;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+      }
+
+      .form-control::placeholder {
+        color: #64748b;
+      }
+      
+      .form-control option {
+        background: #0f172a;
+        color: #fff;
+      }
+
+      .file-drop-area {
+        border: 2px dashed rgba(71, 85, 105, 0.6);
+        border-radius: 16px;
+        padding: 32px;
+        text-align: center;
+        background: rgba(30, 41, 59, 0.3);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .file-drop-area:hover {
+        border-color: #6366f1;
+        background: rgba(30, 41, 59, 0.5);
+      }
+
+      .file-icon-wrap {
+        width: 64px;
+        height: 64px;
+        background: rgba(99, 102, 241, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px auto;
+        font-size: 24px;
+      }
+
+      .file-drop-text {
+        font-weight: 500;
+        color: #e2e8f0;
+        margin-bottom: 4px;
+      }
+
+      .file-drop-sub {
+        font-size: 14px;
+        color: #64748b;
+      }
+
+      .file-selected {
+        margin-top: 16px;
+        padding: 16px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .file-info {
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .file-name {
+        font-weight: 500;
+        color: #e2e8f0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .file-size {
+        font-size: 13px;
+        color: #94a3b8;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      @media (min-width: 768px) {
+        .grid-2 {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .type-toggle-container {
+        display: flex;
+        gap: 16px;
+      }
+
+      .type-toggle-btn {
+        flex: 1;
+        padding: 16px;
+        border-radius: 12px;
+        border: 2px solid rgba(51, 65, 85, 0.8);
+        background: rgba(30, 41, 59, 0.3);
+        color: #94a3b8;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .type-toggle-btn.active-free {
+        border-color: #10b981;
+        background: rgba(16, 185, 129, 0.1);
+        color: #34d399;
+      }
+
+      .type-toggle-btn.active-paid {
+        border-color: #3b82f6;
+        background: rgba(59, 130, 246, 0.1);
+        color: #60a5fa;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .btn-primary {
+        background: #4f46e5;
+        color: #ffffff;
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        background: #6366f1;
+      }
+      
+      .btn-primary:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      .btn-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        padding: 8px 16px;
+        font-size: 14px;
+        width: auto;
+      }
+
+      .btn-danger:hover {
+        background: rgba(239, 68, 68, 0.2);
+      }
+
+      .note-footer {
+        text-align: center;
+        font-size: 13px;
+        color: #64748b;
+        margin-top: 16px;
+      }
+    `;
+
+    return (
+        <>
+            <style>{styles}</style>
+            <div className="upload-container">
+                <div className="upload-card">
+                    <h1 className="upload-title">Upload New Notes</h1>
+                    <p className="upload-subtitle">
                         Your note will be reviewed by admin before publishing
                     </p>
 
-                    <form onSubmit={handleSubmit} className="space-y-8">
+                    <form onSubmit={handleSubmit}>
                         {/* File Upload */}
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Upload PDF File</label>
-                            <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-8 text-center hover:border-blue-500 transition-colors">
+                        <div className="form-group">
+                            <label className="form-label">Upload PDF File</label>
+                            <label htmlFor="pdf-upload" className="file-drop-area" style={{ display: 'block' }}>
                                 <input
                                     type="file"
                                     accept="application/pdf"
                                     onChange={handleFileChange}
-                                    className="hidden"
+                                    style={{ display: 'none' }}
                                     id="pdf-upload"
                                 />
-                                <label htmlFor="pdf-upload" className="cursor-pointer">
-                                    <div className="mx-auto w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mb-4">
-                                        📄
-                                    </div>
-                                    <p className="font-medium">Click to upload PDF</p>
-                                    <p className="text-sm text-gray-500 mt-1">Max size: 10MB</p>
-                                </label>
-                            </div>
+                                <div className="file-icon-wrap">
+                                    📄
+                                </div>
+                                <p className="file-drop-text">Click to upload PDF</p>
+                                <p className="file-drop-sub">Max size: 10MB</p>
+                            </label>
 
                             {file && (
-                                <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center gap-3">
+                                <div className="file-selected">
                                     <span>✅</span>
-                                    <div className="flex-1 truncate">
-                                        <p className="font-medium">{file.name}</p>
-                                        <p className="text-sm text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                                    <div className="file-info">
+                                        <p className="file-name">{file.name}</p>
+                                        <p className="file-size">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                                     </div>
-                                    <Button variant="danger" onClick={() => { setFile(null); setFilePreview(null); }}>
+                                    <button type="button" className="btn btn-danger" onClick={(e) => { e.preventDefault(); setFile(null); setFilePreview(null); }}>
                                         Remove
-                                    </Button>
+                                    </button>
                                 </div>
                             )}
                         </div>
 
                         {/* Note Details */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Input
-                                label="Note Title *"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                placeholder="e.g. Data Structures Complete Handwritten Notes"
-                                required
-                            />
+                        <div className="grid-2 form-group">
+                            <div>
+                                <label className="form-label">Note Title *</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="title"
+                                    value={formData.title}
+                                    onChange={handleChange}
+                                    placeholder="e.g. Data Structures Complete Notes"
+                                    required
+                                />
+                            </div>
 
-                            <Input
-                                label="Subject *"
-                                name="subject"
-                                value={formData.subject}
-                                onChange={handleChange}
-                                placeholder="e.g. DSA, OS, DBMS"
-                                required
-                            />
+                            <div>
+                                <label className="form-label">Subject *</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="subject"
+                                    value={formData.subject}
+                                    onChange={handleChange}
+                                    placeholder="e.g. DSA, OS, DBMS"
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Category *</label>
+                        <div className="form-group">
+                            <label className="form-label">Category *</label>
                             <select
                                 name="category"
                                 value={formData.category}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:bg-gray-800 dark:border-gray-600"
+                                className="form-control"
                                 required
                             >
                                 <option value="">Select Category</option>
@@ -161,40 +391,34 @@ export default function UploadNote() {
                             </select>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Description *</label>
+                        <div className="form-group">
+                            <label className="form-label">Description *</label>
                             <textarea
                                 name="description"
                                 value={formData.description}
                                 onChange={handleChange}
                                 rows={5}
-                                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:bg-gray-800 dark:border-gray-600"
+                                className="form-control"
                                 placeholder="Write a detailed description about your notes..."
                                 required
                             />
                         </div>
 
                         {/* Free or Paid */}
-                        <div>
-                            <label className="block text-sm font-medium mb-3">Note Type</label>
-                            <div className="flex gap-4">
+                        <div className="form-group">
+                            <label className="form-label">Note Type</label>
+                            <div className="type-toggle-container">
                                 <button
                                     type="button"
                                     onClick={() => toggleFreePaid(true)}
-                                    className={`flex-1 py-4 rounded-2xl border-2 font-medium transition-all ${formData.isFree
-                                            ? 'border-green-500 bg-green-50 dark:bg-green-900/30'
-                                            : 'border-gray-300 dark:border-gray-700'
-                                        }`}
+                                    className={`type-toggle-btn ${formData.isFree ? 'active-free' : ''}`}
                                 >
                                     🆓 Free Note
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => toggleFreePaid(false)}
-                                    className={`flex-1 py-4 rounded-2xl border-2 font-medium transition-all ${!formData.isFree
-                                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30'
-                                            : 'border-gray-300 dark:border-gray-700'
-                                        }`}
+                                    className={`type-toggle-btn ${!formData.isFree ? 'active-paid' : ''}`}
                                 >
                                     💰 Paid Note
                                 </button>
@@ -202,32 +426,35 @@ export default function UploadNote() {
                         </div>
 
                         {!formData.isFree && (
-                            <Input
-                                label="Price (₹)"
-                                name="price"
-                                type="number"
-                                value={formData.price}
-                                onChange={handleChange}
-                                placeholder="Enter price in rupees"
-                                min="0"
-                            />
+                            <div className="form-group">
+                                <label className="form-label">Price (₹) *</label>
+                                <input
+                                    className="form-control"
+                                    name="price"
+                                    type="number"
+                                    value={formData.price}
+                                    onChange={handleChange}
+                                    placeholder="Enter price in rupees"
+                                    min="1"
+                                    required={!formData.isFree}
+                                />
+                            </div>
                         )}
 
-                        <Button
+                        <button
                             type="submit"
-                            variant="primary"
-                            isLoading={isSubmitting}
-                            className="w-full py-4 text-lg"
+                            className="btn btn-primary"
+                            disabled={isSubmitting}
                         >
-                            Submit for Admin Review
-                        </Button>
+                            {isSubmitting ? 'Submitting...' : 'Submit for Admin Review'}
+                        </button>
 
-                        <p className="text-center text-xs text-gray-500">
+                        <p className="note-footer">
                             Note: After submission, admin will review your notes. You'll be notified once approved.
                         </p>
                     </form>
-                </Card>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

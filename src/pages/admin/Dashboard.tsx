@@ -98,7 +98,7 @@ export default function AdminDashboard() {
 
                             <div className="mt-6">
                                 <Link to="/admin/review">
-                                    <Button variant="outline" className="w-full">
+                                    <Button variant="secondary" className="w-full">
                                         View All Pending Notes →
                                     </Button>
                                 </Link>

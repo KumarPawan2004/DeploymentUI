@@ -6,143 +6,434 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 export default function UserDashboard() {
-    const { user } = useAuth();
-    const [stats, setStats] = useState({
-        totalNotes: 124,
-        myPurchases: 8,
-        uploadedNotes: 3,
-        pendingReviews: 2
-    });
+  const { user } = useAuth();
+  const [stats, setStats] = useState({
+    totalNotes: 124,
+    myPurchases: 8,
+    uploadedNotes: 3,
+    pendingReviews: 2
+  });
 
-    // Mock recent notes (replace with API call later)
-    const recentNotes = [
-        { id: 1, title: "Data Structures Complete Notes", subject: "DSA", price: 0, status: "Approved" },
-        { id: 2, title: "Operating System Handwritten Notes", subject: "OS", price: 149, status: "Approved" },
-        { id: 3, title: "DBMS Revision Notes", subject: "DBMS", price: 99, status: "Pending" },
-    ];
+  // Mock recent notes (replace with API call later)
+  const recentNotes = [
+    { id: 1, title: "Data Structures Complete Notes", subject: "DSA", price: 0, status: "Approved" },
+    { id: 2, title: "Operating System Handwritten Notes", subject: "OS", price: 149, status: "Approved" },
+    { id: 3, title: "DBMS Revision Notes", subject: "DBMS", price: 99, status: "Pending" },
+  ];
 
-    return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+  const styles = `
+  .dashboard-container {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .dashboard-header {
+    margin-bottom: 40px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .dashboard-header p {
+    color: #94a3b8;
+    margin-top: 8px;
+    font-size: 16px;
+  }
+
+  /* Stats Grid */
+  .dash-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  @media (min-width: 768px) {
+    .dash-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .dash-stats-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .dash-stat-card {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(30, 41, 59, 1);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  }
+
+  .dash-stat-value {
+    font-size: 36px;
+    font-weight: 700;
+  }
+
+  .dash-stat-label {
+    color: #94a3b8;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  .text-indigo { color: #818cf8; }
+  .text-emerald { color: #34d399; }
+  .text-purple { color: #c084fc; }
+  .text-orange { color: #fb923c; }
+
+  /* Main Grid */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @media (min-width: 1024px) {
+    .main-grid {
+      grid-template-columns: repeat(12, 1fr);
+    }
+  }
+
+  .quick-actions-col {
+    grid-column: span 4;
+  }
+
+  .recent-notes-col {
+    grid-column: span 8;
+  }
+
+  .dashboard-card {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(30, 41, 59, 1);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 24px;
+  }
+
+  /* Buttons */
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-bottom: 12px;
+  }
+
+  .action-btn:last-child {
+    margin-bottom: 0;
+  }
+
+  .btn-primary {
+    background: #4f46e5;
+    color: #ffffff;
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
+    border: 1px solid transparent;
+  }
+
+  .btn-primary:hover {
+    background: #6366f1;
+  }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-icon {
+    font-size: 18px;
+  }
+
+  /* Recent Notes List */
+  .notes-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .note-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid rgba(51, 65, 85, 0.5);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .note-item:hover {
+    background: rgba(30, 41, 59, 0.8);
+  }
+
+  .note-title {
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 16px;
+  }
+
+  .note-meta {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+
+  .status-badge {
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .status-approved {
+    background: rgba(16, 185, 129, 0.1);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+
+  .status-pending {
+    background: rgba(234, 179, 8, 0.1);
+    color: #facc15;
+    border: 1px solid rgba(234, 179, 8, 0.2);
+  }
+
+  .view-all-container {
+    margin-top: 32px;
+    text-align: center;
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    padding: 10px 24px;
+    border-radius: 9999px;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Teaser Cards */
+  .teaser-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  @media (min-width: 768px) {
+    .teaser-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .teaser-card {
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+  }
+
+  .teaser-free {
+    background: linear-gradient(135deg, rgba(6, 78, 59, 0.6) 0%, rgba(19, 78, 74, 0.4) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .teaser-premium {
+    background: linear-gradient(135deg, rgba(49, 46, 129, 0.6) 0%, rgba(88, 28, 135, 0.4) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+
+  .teaser-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .teaser-free .teaser-title { color: #34d399; }
+  .teaser-premium .teaser-title { color: #818cf8; }
+
+  .teaser-desc {
+    font-weight: 500;
+    margin-bottom: 32px;
+  }
+
+  .teaser-free .teaser-desc { color: rgba(209, 250, 229, 0.7); }
+  .teaser-premium .teaser-desc { color: rgba(224, 231, 255, 0.7); }
+
+  .btn-success {
+    display: inline-block;
+    background: #10b981;
+    color: #022c22;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+  }
+
+  .btn-success:hover {
+    background: #34d399;
+  }
+
+  .btn-premium {
+    display: inline-block;
+    background: #6366f1;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+  }
+
+  .btn-premium:hover {
+    background: #818cf8;
+  }
+`;
+
+  return (
+    <>
+      <style>{styles}</style>
+      <div className="dashboard-container">
 
 
-            <div className="max-w-7xl mx-auto px-6 py-8">
-                {/* Welcome Header */}
-                <div className="mb-10">
-                    <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-                        Welcome back, {user?.fullName?.split(" ")[0]}! 👋
-                    </h1>
-                    <p className="text-gray-600 dark:text-gray-400 mt-2">
-                        What would you like to do today?
-                    </p>
-                </div>
+        {/* Stats Cards */}
+        <div className="dash-stats-grid">
+          <div className="dash-stat-card">
+            <p className="dash-stat-value text-indigo">{stats.totalNotes}</p>
+            <p className="dash-stat-label">Total Notes</p>
+          </div>
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                    <Card className="text-center">
-                        <p className="text-4xl font-bold text-blue-600">{stats.totalNotes}</p>
-                        <p className="text-gray-600 dark:text-gray-400 mt-2">Total Notes</p>
-                    </Card>
+          <div className="dash-stat-card">
+            <p className="dash-stat-value text-emerald">{stats.myPurchases}</p>
+            <p className="dash-stat-label">My Purchases</p>
+          </div>
 
-                    <Card className="text-center">
-                        <p className="text-4xl font-bold text-green-600">{stats.myPurchases}</p>
-                        <p className="text-gray-600 dark:text-gray-400 mt-2">My Purchases</p>
-                    </Card>
+          <div className="dash-stat-card">
+            <p className="dash-stat-value text-purple">{stats.uploadedNotes}</p>
+            <p className="dash-stat-label">My Uploads</p>
+          </div>
 
-                    <Card className="text-center">
-                        <p className="text-4xl font-bold text-purple-600">{stats.uploadedNotes}</p>
-                        <p className="text-gray-600 dark:text-gray-400 mt-2">My Uploads</p>
-                    </Card>
-
-                    <Card className="text-center">
-                        <p className="text-4xl font-bold text-orange-600">{stats.pendingReviews}</p>
-                        <p className="text-gray-600 dark:text-gray-400 mt-2">Pending Review</p>
-                    </Card>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    {/* Quick Actions */}
-                    <div className="lg:col-span-4">
-                        <Card title="Quick Actions">
-                            <div className="space-y-4">
-                                <Link to="/browse">
-                                    <Button variant="primary" className="w-full justify-start text-left">
-                                        🔍 Browse All Notes
-                                    </Button>
-                                </Link>
-
-                                <Link to="/upload">
-                                    <Button variant="secondary" className="w-full justify-start text-left">
-                                        📤 Upload New Notes
-                                    </Button>
-                                </Link>
-
-                                <Link to="/my-purchases">
-                                    <Button className="w-full justify-start text-left">
-                                        📚 My Purchased Notes
-                                    </Button>
-                                </Link>
-
-                                <Link to="/my-uploads">
-                                    <Button className="w-full justify-start text-left">
-                                        📝 Track My Uploads
-                                    </Button>
-                                </Link>
-                            </div>
-                        </Card>
-                    </div>
-
-                    {/* Recent Activity */}
-                    <div className="lg:col-span-8">
-                        <Card title="Recent Notes">
-                            <div className="space-y-4">
-                                {recentNotes.map((note) => (
-                                    <div key={note.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                                        <div>
-                                            <h4 className="font-medium text-gray-900 dark:text-white">{note.title}</h4>
-                                            <p className="text-sm text-gray-500">{note.subject} • {note.price === 0 ? "Free" : `₹${note.price}`}</p>
-                                        </div>
-                                        <div className={`px-3 py-1 rounded-full text-xs font-medium ${note.status === 'Approved'
-                                            ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                                            : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
-                                            }`}>
-                                            {note.status}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="mt-6 text-center">
-                                <Link to="/browse">
-                                    <Button >Browse All Notes →</Button>
-                                </Link>
-                            </div>
-                        </Card>
-                    </div>
-                </div>
-
-                {/* Free vs Paid Section Teaser */}
-                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
-                        <h3 className="text-2xl font-bold mb-3">Free Notes</h3>
-                        <p className="opacity-90 mb-6">High quality free study materials</p>
-                        <Link to="/browse?type=free">
-                            <Button variant="secondary" className="bg-white text-emerald-700 hover:bg-gray-100">
-                                Explore Free Notes
-                            </Button>
-                        </Link>
-                    </Card>
-
-                    <Card className="bg-gradient-to-br from-violet-600 to-purple-700 text-white">
-                        <h3 className="text-2xl font-bold mb-3">Premium Notes</h3>
-                        <p className="opacity-90 mb-6">Expert curated paid notes</p>
-                        <Link to="/browse?type=paid">
-                            <Button variant="secondary" className="bg-white text-violet-700 hover:bg-gray-100">
-                                Browse Premium Notes
-                            </Button>
-                        </Link>
-                    </Card>
-                </div>
-            </div>
+          <div className="dash-stat-card">
+            <p className="dash-stat-value text-orange">{stats.pendingReviews}</p>
+            <p className="dash-stat-label">Pending Review</p>
+          </div>
         </div>
-    );
+
+        <div className="main-grid">
+          {/* Quick Actions */}
+          <div className="quick-actions-col">
+            <div className="dashboard-card">
+              <h3 className="card-title">Quick Actions</h3>
+              <div>
+                <Link to="/browse" className="action-btn btn-primary">
+                  <span className="btn-icon">🔍</span> Browse All Notes
+                </Link>
+
+                <Link to="/upload" className="action-btn btn-secondary">
+                  <span className="btn-icon">📤</span> Upload New Notes
+                </Link>
+
+                <Link to="/my-purchases" className="action-btn btn-secondary">
+                  <span className="btn-icon">📚</span> My Purchased Notes
+                </Link>
+
+                <Link to="/my-uploads" className="action-btn btn-secondary">
+                  <span className="btn-icon">📝</span> Track My Uploads
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Activity */}
+          <div className="recent-notes-col">
+            <div className="dashboard-card">
+              <h3 className="card-title">Recent Notes</h3>
+              <div className="notes-list">
+                {recentNotes.map((note) => (
+                  <div key={note.id} className="note-item">
+                    <div>
+                      <h4 className="note-title">{note.title}</h4>
+                      <p className="note-meta">{note.subject} • {note.price === 0 ? "Free" : `₹${note.price}`}</p>
+                    </div>
+                    <div className={`status-badge ${note.status === 'Approved' ? 'status-approved' : 'status-pending'}`}>
+                      {note.status}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="view-all-container">
+                <Link to="/browse" className="btn-outline">
+                  Browse All Notes →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Free vs Paid Section Teaser */}
+        <div className="teaser-grid">
+          <div className="teaser-card teaser-free">
+            <h3 className="teaser-title">Free Notes</h3>
+            <p className="teaser-desc">High quality free study materials</p>
+            <Link to="/browse?type=free" className="btn-success">
+              Explore Free Notes
+            </Link>
+          </div>
+
+          <div className="teaser-card teaser-premium">
+            <h3 className="teaser-title">Premium Notes</h3>
+            <p className="teaser-desc">Expert curated paid notes</p>
+            <Link to="/browse?type=paid" className="btn-premium">
+              Browse Premium Notes
+            </Link>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
