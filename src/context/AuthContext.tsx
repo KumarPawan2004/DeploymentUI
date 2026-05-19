@@ -16,7 +16,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(() => {
-        const storedToken = localStorage.getItem('token');
+        const storedToken = sessionStorage.getItem('token');
         // Validate token isn't the string "undefined"
         return storedToken && storedToken !== 'undefined' ? storedToken : null;
     });
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         // Safely get and parse user data
-        const storedUser = localStorage.getItem('user');
+        const storedUser = sessionStorage.getItem('user');
 
         let parsedUser = null;
         if (storedUser && storedUser !== 'undefined' && storedUser !== 'null') {
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             } catch (error) {
                 console.error('Failed to parse user data:', error);
                 // Clear corrupted data
-                localStorage.removeItem('user');
+                sessionStorage.removeItem('user');
             }
         }
 
@@ -53,10 +53,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             // Only store if data is valid
             if (newToken && newToken !== 'undefined') {
-                localStorage.setItem('token', newToken);
+                sessionStorage.setItem('token', newToken);
             }
             if (userData && userData !== 'undefined') {
-                localStorage.setItem('user', JSON.stringify(userData));
+                sessionStorage.setItem('user', JSON.stringify(userData));
             }
 
             setToken(newToken);
@@ -72,8 +72,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
         setToken(null);
         setUser(null);
         toast.success('Logged out successfully');

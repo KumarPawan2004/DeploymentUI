@@ -25,6 +25,17 @@ export default function Login() {
         }
     }, [user, navigate]);
 
+    // Load remembered credentials on mount
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('rememberedEmail');
+        const savedPassword = localStorage.getItem('rememberedPassword');
+        if (savedEmail && savedPassword) {
+            setEmail(savedEmail);
+            setPassword(savedPassword);
+            setRememberMe(true);
+        }
+    }, []);
+
     const validateForm = () => {
         const newErrors: { email?: string; password?: string } = {};
         if (!email) newErrors.email = 'Email is required';
@@ -42,6 +53,15 @@ export default function Login() {
 
         try {
             setIsLoading(true);
+
+            // Handle Remember Me credentials
+            if (rememberMe) {
+                localStorage.setItem('rememberedEmail', email);
+                localStorage.setItem('rememberedPassword', password);
+            } else {
+                localStorage.removeItem('rememberedEmail');
+                localStorage.removeItem('rememberedPassword');
+            }
 
             await login(email, password);
 
