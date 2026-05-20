@@ -13,6 +13,11 @@ import BrowseNotes from './pages/user/BrowseNotes';
 import NoteDetail from './pages/user/NoteDetail';
 import UploadNote from './pages/user/UploadNote';
 import MyPurchases from './pages/user/MyPurchases';
+import MyUploads from './pages/user/MyUploads';
+import Wishlist from './pages/user/Wishlist';
+import Profile from './pages/user/Profile';
+import Settings from './pages/user/Settings';
+import Checkout from './pages/user/Checkout';
 
 import AdminDashboard from './pages/admin/Dashboard';
 import ReviewNotes from './pages/admin/ReviewNotes';
@@ -44,9 +49,14 @@ function App() {
           >
             <Route index element={<UserDashboard />} />
             <Route path="browse" element={<BrowseNotes />} />
-            <Route path="note/:id" element={<NoteDetail />} />
+            <Route path="browse/note/:id" element={<NoteDetail />} />
             <Route path="upload" element={<UploadNote />} />
+            <Route path="my-uploads" element={<MyUploads />} />
             <Route path="my-purchases" element={<MyPurchases />} />
+            <Route path="wishlist" element={<Wishlist />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="checkout/:id" element={<Checkout />} />
           </Route>
 
           {/* ADMIN ROUTES */}

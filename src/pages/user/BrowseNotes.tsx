@@ -1,93 +1,108 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Heart } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface Note {
-    id: string;
-    title: string;
-    subject: string;
-    category: string;
-    price: number;
-    uploadedBy: string;
-    rating: number;
-    downloads: number;
+  id: string;
+  title: string;
+  subject: string;
+  category: string;
+  price: number;
+  uploadedBy: string;
+  rating: number;
+  downloads: number;
 }
 
 export default function BrowseNotes() {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('All');
-    const [priceFilter, setPriceFilter] = useState<'All' | 'Free' | 'Paid'>('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [priceFilter, setPriceFilter] = useState<'All' | 'Free' | 'Paid'>('All');
+  const [wishlistIds, setWishlistIds] = useState<string[]>([]);
 
-    // Mock Data
-    const allNotes: Note[] = [
-        {
-            id: "1",
-            title: "Complete Data Structures & Algorithms Handwritten Notes",
-            subject: "DSA",
-            category: "Computer Science",
-            price: 0,
-            uploadedBy: "Rahul Sharma",
-            rating: 4.8,
-            downloads: 1240
-        },
-        {
-            id: "2",
-            title: "Operating System Full Notes with PYQs",
-            subject: "OS",
-            category: "Computer Science",
-            price: 149,
-            uploadedBy: "Priya Singh",
-            rating: 4.9,
-            downloads: 890
-        },
-        {
-            id: "3",
-            title: "DBMS Complete Revision Notes",
-            subject: "DBMS",
-            category: "Computer Science",
-            price: 99,
-            uploadedBy: "Amit Kumar",
-            rating: 4.7,
-            downloads: 650
-        },
-        {
-            id: "4",
-            title: "Mathematics Engineering Notes",
-            subject: "Maths",
-            category: "Mathematics",
-            price: 0,
-            uploadedBy: "Sneha Patel",
-            rating: 4.5,
-            downloads: 420
-        },
-        {
-            id: "5",
-            title: "Computer Networks Complete Guide",
-            subject: "CN",
-            category: "Computer Science",
-            price: 199,
-            uploadedBy: "Vikas Sharma",
-            rating: 4.6,
-            downloads: 310
-        },
-    ];
+  // Mock Data
+  const allNotes: Note[] = [
+    {
+      id: "1",
+      title: "Complete Data Structures & Algorithms Handwritten Notes",
+      subject: "DSA",
+      category: "Computer Science",
+      price: 0,
+      uploadedBy: "Rahul Sharma",
+      rating: 4.8,
+      downloads: 1240
+    },
+    {
+      id: "2",
+      title: "Operating System Full Notes with PYQs",
+      subject: "OS",
+      category: "Computer Science",
+      price: 149,
+      uploadedBy: "Priya Singh",
+      rating: 4.9,
+      downloads: 890
+    },
+    {
+      id: "3",
+      title: "DBMS Complete Revision Notes",
+      subject: "DBMS",
+      category: "Computer Science",
+      price: 99,
+      uploadedBy: "Amit Kumar",
+      rating: 4.7,
+      downloads: 650
+    },
+    {
+      id: "4",
+      title: "Mathematics Engineering Notes",
+      subject: "Maths",
+      category: "Mathematics",
+      price: 0,
+      uploadedBy: "Sneha Patel",
+      rating: 4.5,
+      downloads: 420
+    },
+    {
+      id: "5",
+      title: "Computer Networks Complete Guide",
+      subject: "CN",
+      category: "Computer Science",
+      price: 199,
+      uploadedBy: "Vikas Sharma",
+      rating: 4.6,
+      downloads: 310
+    },
+  ];
 
-    const categories = ['All', 'Computer Science', 'DSA', 'Mathematics', 'Others'];
+  const categories = ['All', 'Computer Science', 'DSA', 'Mathematics', 'Others'];
 
-    const filteredNotes = allNotes.filter(note => {
-        const matchesSearch = note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            note.subject.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredNotes = allNotes.filter(note => {
+    const matchesSearch = note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      note.subject.toLowerCase().includes(searchTerm.toLowerCase());
 
-        const matchesCategory = selectedCategory === 'All' || note.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'All' || note.category === selectedCategory;
 
-        const matchesPrice =
-            priceFilter === 'All' ||
-            (priceFilter === 'Free' && note.price === 0) ||
-            (priceFilter === 'Paid' && note.price > 0);
+    const matchesPrice =
+      priceFilter === 'All' ||
+      (priceFilter === 'Free' && note.price === 0) ||
+      (priceFilter === 'Paid' && note.price > 0);
 
-        return matchesSearch && matchesCategory && matchesPrice;
+    return matchesSearch && matchesCategory && matchesPrice;
+  });
+
+  const toggleWishlist = (id: string) => {
+    setWishlistIds(prev => {
+      if (prev.includes(id)) {
+        toast.success("Removed from Wishlist");
+        return prev.filter(noteId => noteId !== id);
+      } else {
+        toast.success("Added to Wishlist!");
+        return [...prev, id];
+      }
     });
+  };
 
-    const styles = `
+  const styles = `
       .browse-container {
         max-width: 1280px;
         margin: 0 auto;
@@ -245,6 +260,33 @@ export default function BrowseNotes() {
         border: 1px solid rgba(249, 115, 22, 0.2);
       }
 
+      .wishlist-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .wishlist-btn:hover {
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.2);
+        transform: scale(1.1);
+      }
+
+      .wishlist-btn.active {
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.2);
+      }
+
       .note-title {
         font-size: 18px;
         font-weight: 700;
@@ -362,117 +404,129 @@ export default function BrowseNotes() {
       }
     `;
 
-    return (
-        <>
-            <style>{styles}</style>
-            <div className="browse-container">
-                <div className="browse-header">
-                    <div>
-                        <h1 className="browse-title">Browse Notes</h1>
-                        <p className="browse-subtitle">Discover high-quality study materials</p>
-                    </div>
-                    <Link to="/upload" className="btn btn-primary" style={{ flex: 'none', padding: '12px 24px' }}>
-                        + Upload Your Notes
-                    </Link>
-                </div>
+  return (
+    <>
+      <style>{styles}</style>
+      <div className="browse-container">
+        <div className="browse-header">
+          <div>
+            <h1 className="browse-title">Browse Notes</h1>
+            <p className="browse-subtitle">Discover high-quality study materials</p>
+          </div>
+          <Link to="/upload" className="btn btn-primary" style={{ flex: 'none', padding: '12px 24px' }}>
+            + Upload Your Notes
+          </Link>
+        </div>
 
-                {/* Filters */}
-                <div className="filter-card">
-                    <div className="filter-grid">
-                        <div className="filter-search">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search by title, subject..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-
-                        <select
-                            className="form-control"
-                            value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
-                        >
-                            {categories.map(cat => (
-                                <option key={cat} value={cat}>{cat}</option>
-                            ))}
-                        </select>
-
-                        <select
-                            className="form-control"
-                            value={priceFilter}
-                            onChange={(e) => setPriceFilter(e.target.value as 'All' | 'Free' | 'Paid')}
-                        >
-                            <option value="All">All Notes</option>
-                            <option value="Free">Free Only</option>
-                            <option value="Paid">Paid Only</option>
-                        </select>
-                    </div>
-                </div>
-
-                {/* Results Count */}
-                <p className="results-count">
-                    Showing {filteredNotes.length} notes
-                </p>
-
-                {/* Notes Grid */}
-                <div className="notes-grid">
-                    {filteredNotes.map((note) => (
-                        <div key={note.id} className="note-card">
-                            <div className="note-header">
-                                <div className="badge badge-subject">
-                                    {note.subject}
-                                </div>
-                                <div className={`badge ${note.price === 0 ? 'badge-free' : 'badge-paid'}`}>
-                                    {note.price === 0 ? 'FREE' : `₹${note.price}`}
-                                </div>
-                            </div>
-
-                            <h3 className="note-title">
-                                {note.title}
-                            </h3>
-
-                            <p className="note-author">
-                                By {note.uploadedBy}
-                            </p>
-
-                            <div className="note-meta-flex">
-                                <div className="note-rating">
-                                    ⭐ <span>{note.rating}</span>
-                                </div>
-                                <div className="note-downloads">
-                                    {note.downloads.toLocaleString()} downloads
-                                </div>
-                            </div>
-
-                            <div className="note-actions">
-                                <Link to={`/note/${note.id}`} className="btn btn-secondary">
-                                    View Details
-                                </Link>
-
-                                {note.price === 0 ? (
-                                    <button className="btn btn-success">
-                                        Download
-                                    </button>
-                                ) : (
-                                    <button className="btn btn-primary">
-                                        Buy ₹{note.price}
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {filteredNotes.length === 0 && (
-                    <div className="empty-state">
-                        <p className="empty-icon">😔</p>
-                        <p className="empty-title">No notes found</p>
-                        <p className="empty-desc">Try changing your filters</p>
-                    </div>
-                )}
+        {/* Filters */}
+        <div className="filter-card">
+          <div className="filter-grid">
+            <div className="filter-search">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search by title, subject..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-        </>
-    );
+
+            <select
+              className="form-control"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+
+            <select
+              className="form-control"
+              value={priceFilter}
+              onChange={(e) => setPriceFilter(e.target.value as 'All' | 'Free' | 'Paid')}
+            >
+              <option value="All">All Notes</option>
+              <option value="Free">Free Only</option>
+              <option value="Paid">Paid Only</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Results Count */}
+        <p className="results-count">
+          Showing {filteredNotes.length} notes
+        </p>
+
+        {/* Notes Grid */}
+        <div className="notes-grid">
+          {filteredNotes.map((note) => (
+            <div key={note.id} className="note-card">
+              <div className="note-header">
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <div className="badge badge-subject">
+                    {note.subject}
+                  </div>
+                  <div className={`badge ${note.price === 0 ? 'badge-free' : 'badge-paid'}`}>
+                    {note.price === 0 ? 'FREE' : `₹${note.price}`}
+                  </div>
+                </div>
+                <button 
+                  className={`wishlist-btn ${wishlistIds.includes(note.id) ? 'active' : ''}`}
+                  onClick={() => toggleWishlist(note.id)}
+                  title="Add to Wishlist"
+                >
+                  <Heart 
+                    size={16} 
+                    fill={wishlistIds.includes(note.id) ? "#ef4444" : "none"} 
+                  />
+                </button>
+              </div>
+
+              <h3 className="note-title">
+                {note.title}
+              </h3>
+
+              <p className="note-author">
+                By {note.uploadedBy}
+              </p>
+
+              <div className="note-meta-flex">
+                <div className="note-rating">
+                  ⭐ <span>{note.rating}</span>
+                </div>
+                <div className="note-downloads">
+                  {note.downloads.toLocaleString()} downloads
+                </div>
+              </div>
+
+              <div className="note-actions">
+                <Link to={`/browse/note/${note.id}`} className="btn btn-secondary">
+                  View Details
+                </Link>
+
+                {note.price === 0 ? (
+                  <button className="btn btn-success" onClick={() => toast.success("Downloading...")}>
+                    Download
+                  </button>
+                ) : (
+                  <Link to={`/checkout/${note.id}`} className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                    Buy ₹{note.price}
+                  </Link>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {filteredNotes.length === 0 && (
+          <div className="empty-state">
+            <p className="empty-icon">😔</p>
+            <p className="empty-title">No notes found</p>
+            <p className="empty-desc">Try changing your filters</p>
+          </div>
+        )}
+      </div>
+    </>
+  );
 }

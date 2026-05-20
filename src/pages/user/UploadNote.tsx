@@ -68,7 +68,7 @@ export default function UploadNote() {
     // Simulate API call
     setTimeout(() => {
       toast.success("Note uploaded successfully! Sent for Admin Review.");
-      navigate('/user/dashboard');
+      navigate('/my-uploads');
     }, 1500);
   };
 

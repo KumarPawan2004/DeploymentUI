@@ -9,7 +9,9 @@ import {
   Search,
   Settings,
   Bell,
-  ChevronRight
+  ChevronRight,
+  Heart,
+  History
 } from "lucide-react";
 import { useState } from "react";
 
@@ -30,9 +32,19 @@ const userNav = [
     icon: <Upload size={20} />
   },
   {
+    path: "/my-uploads",
+    label: "My Uploads",
+    icon: <History size={20} />
+  },
+  {
     path: "/my-purchases",
     label: "My Purchases",
     icon: <ShoppingBag size={20} />
+  },
+  {
+    path: "/wishlist",
+    label: "Wishlist",
+    icon: <Heart size={20} />
   }
 ];
 
@@ -572,6 +584,7 @@ export default function UserLayout() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [searchFocused, setSearchFocused] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState("");
 
   return (
     <>
@@ -662,6 +675,8 @@ export default function UserLayout() {
                 <input
                   type="text"
                   placeholder="Search notes, topics..."
+                  value={globalSearch}
+                  onChange={(e) => setGlobalSearch(e.target.value)}
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setSearchFocused(false)}
                   className="search-input"
@@ -675,24 +690,26 @@ export default function UserLayout() {
               </button>
 
               {/* SETTINGS ICON */}
-              <button className="icon-btn">
+              <Link to="/settings" className="icon-btn">
                 <Settings size={14} />
-              </button>
+              </Link>
 
               {/* PROFILE AVATAR */}
-              <div className="navbar-profile">
-                <div className="profile-info">
-                  <p className="profile-info-name">{user?.fullName}</p>
-                  <p className="profile-info-status">Active now</p>
+              <Link to="/profile" style={{ textDecoration: 'none' }}>
+                <div className="navbar-profile">
+                  <div className="profile-info">
+                    <p className="profile-info-name">{user?.fullName}</p>
+                    <p className="profile-info-status">Active now</p>
+                  </div>
+                  <div className="profile-avatar">{user?.fullName?.charAt(0)}</div>
                 </div>
-                <div className="profile-avatar">{user?.fullName?.charAt(0)}</div>
-              </div>
+              </Link>
             </div>
           </header>
 
           {/* PAGE */}
           <main className="noteshub-content">
-            <Outlet />
+            <Outlet context={{ globalSearch }} />
           </main>
         </div>
       </div>

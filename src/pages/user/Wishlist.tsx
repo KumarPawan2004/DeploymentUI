@@ -1,58 +1,51 @@
 import { useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { Download, Eye, Book, CreditCard, Calendar, Library, ArrowRight } from 'lucide-react';
+import { Trash2, ShoppingCart, Book, CreditCard, Heart, ArrowRight } from 'lucide-react';
+import toast from 'react-hot-toast';
 
-interface PurchasedNote {
+interface WishlistNote {
     id: string;
     title: string;
     subject: string;
     price: number;
-    purchasedAt: string;
-    downloaded: number;
+    isFree: boolean;
+    addedAt: string;
 }
 
-export default function MyPurchases() {
-    const [purchasedNotes, setPurchasedNotes] = useState<PurchasedNote[]>([
+export default function Wishlist() {
+    const [wishlistNotes, setWishlistNotes] = useState<WishlistNote[]>([
         {
             id: "1",
-            title: "Complete Data Structures & Algorithms Handwritten Notes",
-            subject: "DSA",
-            price: 199,
-            purchasedAt: "10 May 2026",
-            downloaded: 3
+            title: "Advanced Machine Learning Algorithms",
+            subject: "AI/ML",
+            price: 299,
+            isFree: false,
+            addedAt: "19 May 2026"
         },
         {
             id: "2",
-            title: "Operating System Full Notes with Diagrams",
-            subject: "OS",
-            price: 149,
-            purchasedAt: "5 May 2026",
-            downloaded: 1
-        },
-        {
-            id: "3",
-            title: "Computer Networks Complete Guide",
-            subject: "CN",
-            price: 179,
-            purchasedAt: "28 April 2026",
-            downloaded: 5
+            title: "React JS Complete Guide",
+            subject: "Web Dev",
+            price: 0,
+            isFree: true,
+            addedAt: "15 May 2026"
         },
     ]);
 
     const { globalSearch } = useOutletContext<{ globalSearch: string }>();
 
-    const filteredNotes = purchasedNotes.filter(note =>
+    const filteredNotes = wishlistNotes.filter(note =>
         note.title.toLowerCase().includes(globalSearch.toLowerCase()) ||
         note.subject.toLowerCase().includes(globalSearch.toLowerCase())
     );
 
-    const handleDownload = (note: PurchasedNote) => {
-        alert(`Downloading: ${note.title}`);
-        // In real app → call API to download PDF
+    const handleRemove = (id: string, title: string) => {
+        setWishlistNotes(prev => prev.filter(note => note.id !== id));
+        toast.success(`Removed "${title}" from wishlist`);
     };
 
     const styles = `
-      .purchases-container {
+      .wishlist-container {
         max-width: 1200px;
         margin: 0 auto;
         padding: 40px 24px;
@@ -71,7 +64,7 @@ export default function MyPurchases() {
       .page-title {
         font-size: 36px;
         font-weight: 800;
-        background: linear-gradient(to right, #818cf8, #c084fc);
+        background: linear-gradient(to right, #f43f5e, #fb7185);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 8px;
@@ -87,31 +80,31 @@ export default function MyPurchases() {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        background: linear-gradient(135deg, #e11d48 0%, #f43f5e 100%);
         color: white;
         padding: 12px 24px;
         border-radius: 12px;
         font-weight: 600;
         text-decoration: none;
         transition: all 0.3s ease;
-        box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 10px 20px -5px rgba(244, 63, 94, 0.4);
       }
 
       .browse-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 15px 25px -5px rgba(99, 102, 241, 0.5);
+        box-shadow: 0 15px 25px -5px rgba(244, 63, 94, 0.5);
       }
 
-      .purchases-grid {
+      .wishlist-grid {
         display: grid;
         grid-template-columns: 1fr;
         gap: 24px;
       }
 
-      .purchase-card {
+      .wishlist-card {
         background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(244, 63, 94, 0.15);
         border-radius: 20px;
         padding: 32px;
         display: flex;
@@ -121,14 +114,14 @@ export default function MyPurchases() {
         box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
       }
 
-      .purchase-card:hover {
+      .wishlist-card:hover {
         transform: translateY(-4px);
-        border-color: rgba(99, 102, 241, 0.4);
-        box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.2);
+        border-color: rgba(244, 63, 94, 0.4);
+        box-shadow: 0 20px 40px -10px rgba(244, 63, 94, 0.2);
       }
 
       @media (min-width: 1024px) {
-        .purchase-card {
+        .wishlist-card {
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
@@ -166,7 +159,7 @@ export default function MyPurchases() {
       }
 
       .meta-icon {
-        color: #818cf8;
+        color: #fb7185;
       }
 
       .meta-icon.success {
@@ -205,41 +198,35 @@ export default function MyPurchases() {
         transition: all 0.2s ease;
         border: none;
         width: 100%;
+        text-decoration: none;
       }
 
-      .btn-download {
+      .btn-buy {
         background: rgba(16, 185, 129, 0.15);
         color: #34d399;
         border: 1px solid rgba(16, 185, 129, 0.3);
       }
 
-      .btn-download:hover {
+      .btn-buy:hover {
         background: rgba(16, 185, 129, 0.25);
         transform: translateY(-2px);
       }
 
-      .btn-view {
-        background: rgba(30, 41, 59, 0.8);
-        color: #e2e8f0;
-        border: 1px solid rgba(148, 163, 184, 0.3);
+      .btn-remove {
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.2);
       }
 
-      .btn-view:hover {
-        background: rgba(51, 65, 85, 0.8);
-        border-color: rgba(148, 163, 184, 0.5);
+      .btn-remove:hover {
+        background: rgba(239, 68, 68, 0.2);
+        border-color: rgba(239, 68, 68, 0.4);
         transform: translateY(-2px);
-      }
-
-      .download-count {
-        font-size: 13px;
-        color: #64748b;
-        text-align: right;
-        margin-top: 8px;
       }
 
       .empty-state {
         background: linear-gradient(145deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
-        border: 2px dashed rgba(99, 102, 241, 0.2);
+        border: 2px dashed rgba(244, 63, 94, 0.2);
         border-radius: 24px;
         padding: 80px 20px;
         text-align: center;
@@ -251,14 +238,14 @@ export default function MyPurchases() {
       .empty-icon-wrap {
         width: 96px;
         height: 96px;
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+        background: linear-gradient(135deg, rgba(244, 63, 94, 0.1), rgba(225, 29, 72, 0.1));
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #818cf8;
+        color: #fb7185;
         margin-bottom: 24px;
-        box-shadow: 0 0 30px rgba(99,102,241,0.1);
+        box-shadow: 0 0 30px rgba(244,63,94,0.1);
       }
 
       .empty-title {
@@ -279,14 +266,14 @@ export default function MyPurchases() {
     return (
         <>
             <style>{styles}</style>
-            <div className="purchases-container">
+            <div className="wishlist-container">
                 <div className="header-section">
                     <div>
-                        <h1 className="page-title">My Learning Library</h1>
-                        <p className="page-subtitle">Access all your purchased notes anytime, anywhere.</p>
+                        <h1 className="page-title">My Wishlist</h1>
+                        <p className="page-subtitle">Notes you've saved for later.</p>
                     </div>
                     <Link to="/browse" className="browse-btn">
-                        Browse More Notes
+                        Explore Collection
                         <ArrowRight size={18} />
                     </Link>
                 </div>
@@ -294,22 +281,22 @@ export default function MyPurchases() {
                 {filteredNotes.length === 0 ? (
                     <div className="empty-state">
                         <div className="empty-icon-wrap">
-                            <Library size={48} />
+                            <Heart size={48} />
                         </div>
-                        <h3 className="empty-title">No Notes Found</h3>
+                        <h3 className="empty-title">Your Wishlist is Empty</h3>
                         <p className="empty-desc">
                             {globalSearch 
-                                ? "We couldn't find any purchased notes matching your search criteria." 
-                                : "You haven't added any notes to your library yet. Start exploring our collection!"}
+                                ? "We couldn't find any saved notes matching your search criteria." 
+                                : "You haven't saved any notes yet. Browse the collection and click the heart icon to save notes for later!"}
                         </p>
                         <Link to="/browse" className="browse-btn">
-                            Explore Collection
+                            Browse Notes
                         </Link>
                     </div>
                 ) : (
-                    <div className="purchases-grid">
+                    <div className="wishlist-grid">
                         {filteredNotes.map((note) => (
-                            <div key={note.id} className="purchase-card">
+                            <div key={note.id} className="wishlist-card">
                                 <div className="note-info">
                                     <h3 className="note-title">
                                         {note.title}
@@ -320,35 +307,28 @@ export default function MyPurchases() {
                                             {note.subject}
                                         </div>
                                         <div className="meta-item">
-                                            <CreditCard size={16} className="meta-icon success" />
-                                            Paid ₹{note.price}
-                                        </div>
-                                        <div className="meta-item">
-                                            <Calendar size={16} className="meta-icon" />
-                                            {note.purchasedAt}
+                                            <CreditCard size={16} className={note.isFree ? "meta-icon success" : "meta-icon"} />
+                                            {note.isFree ? 'Free' : `₹${note.price}`}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div>
                                     <div className="card-actions">
-                                        <button 
-                                            className="action-btn btn-download"
-                                            onClick={() => handleDownload(note)}
+                                        <Link 
+                                            to={note.isFree ? `/browse/note/${note.id}` : `/checkout/${note.id}`}
+                                            className="action-btn btn-buy"
                                         >
-                                            <Download size={18} />
-                                            Download PDF
-                                        </button>
+                                            <ShoppingCart size={18} />
+                                            {note.isFree ? 'View Note' : 'Buy Now'}
+                                        </Link>
                                         <button 
-                                            className="action-btn btn-view"
-                                            onClick={() => alert(`Opening details for: ${note.title}`)}
+                                            className="action-btn btn-remove"
+                                            onClick={() => handleRemove(note.id, note.title)}
                                         >
-                                            <Eye size={18} />
-                                            View Details
+                                            <Trash2 size={18} />
+                                            Remove
                                         </button>
-                                    </div>
-                                    <div className="download-count">
-                                        Downloaded {note.downloaded} time{note.downloaded !== 1 ? 's' : ''}
                                     </div>
                                 </div>
                             </div>

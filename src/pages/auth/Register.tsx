@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { User, Mail, Lock, Eye, EyeOff, ArrowLeft, CheckCircle } from 'lucide-react';
+import api from '../../services/api';
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -44,18 +45,13 @@ export default function Register() {
 
         try {
             setIsLoading(true);
-            const response = await fetch('http://localhost:5001/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ fullName, email, password }),
-            });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message || 'Registration failed');
+            await api.post('/auth/register', { fullName, email, password });
 
             toast.success('Account created! Please sign in.');
             navigate('/login');
         } catch (error: unknown) {
-            toast.error((error as Error).message || 'Something went wrong');
+            const err = error as any;
+            toast.error(err.response?.data?.message || err.message || 'Something went wrong');
         } finally {
             setIsLoading(false);
         }

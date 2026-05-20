@@ -30,6 +30,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (storedUser && storedUser !== 'undefined' && storedUser !== 'null') {
             try {
                 parsedUser = JSON.parse(storedUser);
+                if (parsedUser && parsedUser.role) {
+                    parsedUser.role = parsedUser.role.charAt(0).toUpperCase() + parsedUser.role.slice(1).toLowerCase();
+                }
             } catch (error) {
                 console.error('Failed to parse user data:', error);
                 // Clear corrupted data
@@ -44,12 +47,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = async (email: string, password: string) => {
         try {
             setIsLoading(true);
-            const response = await api.post('/auth/login', { email, password });
+            const response = await api.post('/auth/login', {
+                email: email.trim().toLowerCase(),
+                password
+            });
 
             const { token: newToken, user: userData } = response.data;
 
             console.log('Login Successful - User:', userData);
             console.log('Role:', userData?.role);
+
+            // Normalize role to ensure it is 'Admin' or 'User' (case-sensitive)
+            if (userData && userData.role) {
+                userData.role = userData.role.charAt(0).toUpperCase() + userData.role.slice(1).toLowerCase();
+            }
 
             // Only store if data is valid
             if (newToken && newToken !== 'undefined') {

@@ -63,7 +63,7 @@ export default function Login() {
                 localStorage.removeItem('rememberedPassword');
             }
 
-            await login(email, password);
+            await login(email.trim().toLowerCase(), password);
 
         } catch (error: any) {
             toast.error(
