@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { Trash2, ShoppingCart, Book, CreditCard, Heart, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
+import api from '../../services/api';
 
 interface WishlistNote {
     id: string;
@@ -13,35 +14,55 @@ interface WishlistNote {
 }
 
 export default function Wishlist() {
-    const [wishlistNotes, setWishlistNotes] = useState<WishlistNote[]>([
-        {
-            id: "1",
-            title: "Advanced Machine Learning Algorithms",
-            subject: "AI/ML",
-            price: 299,
-            isFree: false,
-            addedAt: "19 May 2026"
-        },
-        {
-            id: "2",
-            title: "React JS Complete Guide",
-            subject: "Web Dev",
-            price: 0,
-            isFree: true,
-            addedAt: "15 May 2026"
-        },
-    ]);
+    const [wishlistNotes, setWishlistNotes] = useState<WishlistNote[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const { globalSearch } = useOutletContext<{ globalSearch: string }>();
+
+    useEffect(() => {
+        const fetchWishlist = async () => {
+            try {
+                setLoading(true);
+                const res = await api.get('/notes/wishlist');
+                if (res.data) {
+                    const mapped = res.data.map((w: any) => ({
+                        id: w.id.toString(),
+                        title: w.title,
+                        subject: w.subject,
+                        price: w.price,
+                        isFree: w.isFree,
+                        addedAt: new Date(w.uploadedAt).toLocaleDateString('en-IN', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        })
+                    }));
+                    setWishlistNotes(mapped);
+                }
+            } catch (err: any) {
+                console.error("Error loading wishlist:", err);
+                toast.error("Failed to load wishlist.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchWishlist();
+    }, []);
 
     const filteredNotes = wishlistNotes.filter(note =>
         note.title.toLowerCase().includes(globalSearch.toLowerCase()) ||
         note.subject.toLowerCase().includes(globalSearch.toLowerCase())
     );
 
-    const handleRemove = (id: string, title: string) => {
-        setWishlistNotes(prev => prev.filter(note => note.id !== id));
-        toast.success(`Removed "${title}" from wishlist`);
+    const handleRemove = async (id: string, title: string) => {
+        try {
+            await api.delete(`/notes/wishlist/${id}`);
+            setWishlistNotes(prev => prev.filter(note => note.id !== id));
+            toast.success(`Removed "${title}" from wishlist`);
+        } catch (err: any) {
+            console.error("Remove wishlist error:", err);
+            toast.error("Failed to remove note from wishlist.");
+        }
     };
 
     const styles = `
@@ -262,6 +283,25 @@ export default function Wishlist() {
         max-width: 400px;
       }
     `;
+
+    if (loading) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', fontFamily: 'Inter, sans-serif' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+                    <div style={{
+                        width: '48px',
+                        height: '48px',
+                        border: '3px solid rgba(244, 63, 94, 0.1)',
+                        borderTop: '3px solid #fb7185',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                    }}></div>
+                    <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                    <p style={{ color: '#94a3b8', fontSize: '14px', fontWeight: 500 }}>Syncing your wishlist...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>

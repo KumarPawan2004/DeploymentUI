@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { Clock, CheckCircle, XCircle, FileText, ArrowRight, Library, AlertCircle } from 'lucide-react';
+import api from '../../services/api';
 
 interface UploadedNote {
     id: string;
@@ -9,41 +10,41 @@ interface UploadedNote {
     price: number;
     isFree: boolean;
     uploadedAt: string;
-    status: 'Pending' | 'Approved' | 'Rejected';
+    status: 'Pending' | 'Approved' | 'Rejected' | 'Deleted';
     rejectReason?: string;
 }
 
 export default function MyUploads() {
-    const [uploadedNotes, setUploadedNotes] = useState<UploadedNote[]>([
-        {
-            id: "1",
-            title: "Advanced Database Management Concepts",
-            subject: "DBMS",
-            price: 150,
-            isFree: false,
-            uploadedAt: "18 May 2026",
-            status: 'Pending'
-        },
-        {
-            id: "2",
-            title: "Data Structures in C++",
-            subject: "DSA",
-            price: 0,
-            isFree: true,
-            uploadedAt: "15 May 2026",
-            status: 'Approved'
-        },
-        {
-            id: "3",
-            title: "Incomplete OS Notes",
-            subject: "OS",
-            price: 200,
-            isFree: false,
-            uploadedAt: "10 May 2026",
-            status: 'Rejected',
-            rejectReason: "Pages 5-10 are blurry. Please re-scan and upload."
-        },
-    ]);
+    const [uploadedNotes, setUploadedNotes] = useState<UploadedNote[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUploads = async () => {
+            try {
+                setLoading(true);
+                const res = await api.get('/notes/my-uploads');
+                if (res.data) {
+                    const mapped = res.data.map((n: any) => ({
+                        id: n.id.toString(),
+                        title: n.title,
+                        subject: n.subject,
+                        price: n.price,
+                        isFree: n.isFree,
+                        uploadedAt: new Date(n.uploadedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+                        status: n.status,
+                        rejectReason: n.rejectionReason
+                    }));
+                    setUploadedNotes(mapped);
+                }
+            } catch (err: any) {
+                console.error("Error loading uploads:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUploads();
+    }, []);
 
     const { globalSearch } = useOutletContext<{ globalSearch: string }>();
 

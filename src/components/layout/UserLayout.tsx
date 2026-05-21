@@ -13,7 +13,8 @@ import {
   Heart,
   History
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import api from "../../services/api";
 
 const userNav = [
   {
@@ -585,6 +586,26 @@ export default function UserLayout() {
   const location = useLocation();
   const [searchFocused, setSearchFocused] = useState(false);
   const [globalSearch, setGlobalSearch] = useState("");
+  const [stats, setStats] = useState({ libraryCount: 0, uploadsCount: 0 });
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchSidebarStats = async () => {
+      try {
+        const [purchasedRes, uploadsRes] = await Promise.all([
+          api.get('/notes/purchased').catch(() => ({ data: [] })),
+          api.get('/notes/my-uploads').catch(() => ({ data: [] }))
+        ]);
+        setStats({
+          libraryCount: purchasedRes.data?.length || 0,
+          uploadsCount: uploadsRes.data?.length || 0
+        });
+      } catch (err) {
+        console.error("Error loading sidebar stats:", err);
+      }
+    };
+    fetchSidebarStats();
+  }, [user, location.pathname]);
 
   return (
     <>
@@ -626,15 +647,58 @@ export default function UserLayout() {
             <div className="sidebar-stats-label">Your Progress</div>
             <div className="stats-grid">
               <div className="stat-card">
-                <div className="stat-label">Notes Read</div>
-                <div className="stat-value">24</div>
+                <div className="stat-label">Library</div>
+                <div className="stat-value">{stats.libraryCount}</div>
               </div>
               <div className="stat-card">
-                <div className="stat-label">This Week</div>
-                <div className="stat-value">8</div>
+                <div className="stat-label">My Uploads</div>
+                <div className="stat-value">{stats.uploadsCount}</div>
               </div>
             </div>
           </div>
+
+          {/* ADMIN PANEL TOGGLE */}
+          {user?.role === 'Admin' && (
+            <div style={{ padding: '0 12px 16px 12px', width: '100%', boxSizing: 'border-box' }}>
+              <Link 
+                to="/admin/dashboard" 
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '10px 12px',
+                  background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%)',
+                  border: '1px solid rgba(168, 85, 247, 0.3)',
+                  borderRadius: '12px',
+                  color: '#ffffff',
+                  textDecoration: 'none',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  transition: 'all 0.25s ease',
+                  boxShadow: '0 4px 15px rgba(168, 85, 247, 0.1)',
+                  boxSizing: 'border-box',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 6px 18px rgba(168, 85, 247, 0.2)';
+                  e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 15px rgba(168, 85, 247, 0.1)';
+                  e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.3)';
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '26px', height: '26px', borderRadius: '8px', background: '#a855f7', color: '#ffffff', fontSize: '12px', flexShrink: 0 }}>
+                  🛡️
+                </div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                  <span style={{ color: '#ffffff' }}>Admin Panel</span>
+                  <span style={{ fontSize: '9px', color: '#c084fc', fontWeight: 500, marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Switch to Control Console</span>
+                </div>
+              </Link>
+            </div>
+          )}
 
           {/* USER PROFILE */}
           <div className="sidebar-user">
@@ -661,7 +725,7 @@ export default function UserLayout() {
           <header className="noteshub-navbar">
             {/* LEFT SECTION */}
             <div className="navbar-left">
-              <h2>Welcome back 👋</h2>
+              <h2>Welcome back, {user?.fullName?.split(' ')[0] || 'User'} 👋</h2>
               <p>Ready to continue learning today?</p>
             </div>
 

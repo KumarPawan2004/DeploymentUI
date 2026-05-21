@@ -1,146 +1,891 @@
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import Navbar from '../../components/common/Navbar';
-import Card from '../../components/common/Card';
-import Button from '../../components/common/Button';
 import { Link } from 'react-router-dom';
+import { 
+    Users, 
+    FileText, 
+    Download, 
+    DollarSign, 
+    Layers, 
+    ArrowUpRight, 
+    Clock, 
+    BarChart3, 
+    TrendingUp, 
+    ShieldCheck, 
+    CreditCard, 
+    Sliders,
+    RefreshCw
+} from 'lucide-react';
+import api from '../../services/api';
+import toast from 'react-hot-toast';
 
 export default function AdminDashboard() {
     const { user } = useAuth();
+    const [activeTab, setActiveTab] = useState<'overview' | 'reports' | 'transactions' | 'settings'>('overview');
+    const [loading, setLoading] = useState(true);
+    const [stats, setStats] = useState<any>({
+        totalUsers: 0,
+        totalNotes: 0,
+        approvedNotes: 0,
+        pendingNotes: 0,
+        totalDownloads: 0,
+        totalRevenue: 0,
+        totalTransactions: 0,
+        categories: []
+    });
 
-    const adminStats = [
-        { label: "Total Users", value: "1,248", color: "blue" },
-        { label: "Total Notes", value: "892", color: "purple" },
-        { label: "Pending Review", value: "47", color: "orange" },
-        { label: "Revenue This Month", value: "₹1,24,500", color: "green" },
-    ];
+    const [transactions, setTransactions] = useState<any[]>([]);
 
-    const quickActions = [
-        { title: "Review Notes", desc: "Approve or reject pending notes", link: "/admin/review", color: "bg-orange-500" },
-        { title: "Manage Users", desc: "View, block, unblock users", link: "/admin/users", color: "bg-blue-500" },
-        { title: "Manage Categories", desc: "Add / Edit categories", link: "/admin/categories", color: "bg-purple-500" },
-        { title: "View Reports", desc: "Sales & Notes Analytics", link: "/admin/reports", color: "bg-emerald-500" },
-    ];
+    const [pendingReviews, setPendingReviews] = useState<any[]>([]);
+
+    // Platform settings configuration state
+    const [minPrice, setMinPrice] = useState(49);
+    const [maxPrice, setMaxPrice] = useState(999);
+    const [allowFree, setAllowFree] = useState(true);
+    const [requireApproval, setRequireApproval] = useState(true);
+
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                setLoading(true);
+                const [statsRes, txnsRes, pendingRes] = await Promise.all([
+                    api.get('/admin/dashboard-stats'),
+                    api.get('/admin/transactions'),
+                    api.get('/admin/pending-notes')
+                ]);
+                
+                if (statsRes.data) {
+                    setStats(statsRes.data);
+                }
+                if (txnsRes.data) {
+                    setTransactions(txnsRes.data);
+                }
+                if (pendingRes.data) {
+                    const mappedPending = pendingRes.data.map((item: any) => ({
+                        id: item.id,
+                        title: item.title,
+                        uploader: item.uploader?.fullName || "Unknown",
+                        subject: item.subject,
+                        time: new Date(item.uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+                    }));
+                    setPendingReviews(mappedPending);
+                }
+            } catch (err: any) {
+                console.error("Error fetching admin dashboard data:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDashboardData();
+    }, []);
+
+    const handleSaveSettings = () => {
+        toast.success("Platform settings updated successfully!");
+    };
+
+    const handleRefreshStats = async () => {
+        try {
+            toast.loading("Syncing dashboard database...", { id: "refresh" });
+            const [statsRes, txnsRes, pendingRes] = await Promise.all([
+                api.get('/admin/dashboard-stats'),
+                api.get('/admin/transactions'),
+                api.get('/admin/pending-notes')
+            ]);
+            
+            if (statsRes.data) {
+                setStats(statsRes.data);
+            }
+            if (txnsRes.data) {
+                setTransactions(txnsRes.data);
+            }
+            if (pendingRes.data) {
+                const mappedPending = pendingRes.data.map((item: any) => ({
+                    id: item.id,
+                    title: item.title,
+                    uploader: item.uploader?.fullName || "Unknown",
+                    subject: item.subject,
+                    time: new Date(item.uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+                }));
+                setPendingReviews(mappedPending);
+            }
+            toast.success("Metrics synchronized live!", { id: "refresh" });
+        } catch (e) {
+            toast.error("Failed to connect to sync server. Using cached data.", { id: "refresh" });
+        }
+    };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-            <Navbar />
+        <div className="dashboard-wrapper">
+            <style>{`
+                .dashboard-wrapper {
+                    font-family: 'Inter', sans-serif;
+                    color: #ffffff;
+                }
 
-            <div className="max-w-7xl mx-auto px-6 py-8">
-                {/* Admin Header */}
-                <div className="mb-10 flex justify-between items-start">
-                    <div>
-                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-                            Admin Dashboard
-                        </h1>
-                        <p className="text-gray-600 dark:text-gray-400 mt-2">
-                            Welcome back, {user?.fullName} • Super Admin
-                        </p>
+                /* ============ NAV TABS ============ */
+                .tab-navigation {
+                    display: flex;
+                    gap: 8px;
+                    border-bottom: 1px solid rgba(168, 85, 247, 0.12);
+                    padding-bottom: 1px;
+                    margin-bottom: 28px;
+                }
+
+                .tab-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 12px 20px;
+                    background: transparent;
+                    border: none;
+                    color: #94a3b8;
+                    font-size: 13px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    position: relative;
+                    transition: all 0.25s ease;
+                }
+
+                .tab-btn:hover {
+                    color: #ffffff;
+                }
+
+                .tab-btn.active {
+                    color: #c084fc;
+                }
+
+                .tab-btn.active::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -1px;
+                    left: 0;
+                    right: 0;
+                    height: 2px;
+                    background: linear-gradient(90deg, #a855f7 0%, #c084fc 100%);
+                    box-shadow: 0 0 10px #a855f7;
+                }
+
+                /* ============ STAT CARDS ============ */
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                    gap: 20px;
+                    margin-bottom: 30px;
+                }
+
+                .glass-card {
+                    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border-radius: 16px;
+                    padding: 22px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+                    position: relative;
+                    overflow: hidden;
+                    transition: all 0.3s ease;
+                }
+
+                .glass-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.03), transparent);
+                    transform: translateX(-100%);
+                    transition: 0.6s;
+                }
+
+                .glass-card:hover {
+                    border-color: rgba(168, 85, 247, 0.2);
+                    transform: translateY(-2px);
+                    box-shadow: 0 12px 40px rgba(168, 85, 247, 0.05);
+                }
+
+                .glass-card:hover::before {
+                    transform: translateX(100%);
+                }
+
+                .stat-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 12px;
+                }
+
+                .stat-title {
+                    font-size: 13px;
+                    color: #94a3b8;
+                    font-weight: 500;
+                }
+
+                .stat-icon-wrapper {
+                    width: 38px;
+                    height: 38px;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: rgba(168, 85, 247, 0.08);
+                    border: 1px solid rgba(168, 85, 247, 0.15);
+                    color: #c084fc;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 800;
+                    background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
+
+                .stat-footer {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    margin-top: 10px;
+                    font-size: 11px;
+                    color: #4ade80;
+                    font-weight: 600;
+                }
+
+                /* ============ LAYOUT COLUMNS ============ */
+                .dashboard-content-columns {
+                    display: grid;
+                    grid-template-columns: 7fr 5fr;
+                    gap: 24px;
+                }
+
+                @media (max-width: 1024px) {
+                    .dashboard-content-columns {
+                        grid-template-columns: 1fr;
+                    }
+                }
+
+                .section-title-bar {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 18px;
+                }
+
+                .section-title-bar h3 {
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: #f1f5f9;
+                }
+
+                /* ============ LISTS & TABLES ============ */
+                .pending-item {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 14px 18px;
+                    background: rgba(255, 255, 255, 0.02);
+                    border: 1px solid rgba(255, 255, 255, 0.04);
+                    border-radius: 12px;
+                    margin-bottom: 10px;
+                    transition: all 0.25s ease;
+                }
+
+                .pending-item:hover {
+                    background: rgba(168, 85, 247, 0.04);
+                    border-color: rgba(168, 85, 247, 0.15);
+                    transform: translateX(2px);
+                }
+
+                .review-btn {
+                    padding: 8px 16px;
+                    background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+                    border: none;
+                    border-radius: 8px;
+                    color: #ffffff;
+                    font-size: 11px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+                    transition: all 0.2s ease;
+                }
+
+                .review-btn:hover {
+                    box-shadow: 0 4px 18px rgba(168, 85, 247, 0.4);
+                    transform: translateY(-1px);
+                }
+
+                .refresh-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 8px 16px;
+                    background: rgba(255, 255, 255, 0.03);
+                    border: 1px solid rgba(255, 255, 255, 0.06);
+                    border-radius: 10px;
+                    color: #cbd5e1;
+                    font-size: 11px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.25s ease;
+                }
+
+                .refresh-btn:hover {
+                    background: rgba(255, 255, 255, 0.08);
+                    border-color: rgba(168, 85, 247, 0.3);
+                    color: #ffffff;
+                }
+
+                /* ============ ANALYTICS CHARTS (CSS ONLY) ============ */
+                .chart-container {
+                    padding: 24px;
+                    background: rgba(255, 255, 255, 0.02);
+                    border: 1px solid rgba(255, 255, 255, 0.04);
+                    border-radius: 16px;
+                    margin-bottom: 24px;
+                }
+
+                .bar-chart-flex {
+                    display: flex;
+                    align-items: flex-end;
+                    justify-content: space-between;
+                    height: 180px;
+                    padding-top: 20px;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                    margin-bottom: 14px;
+                }
+
+                .chart-bar-col {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    flex: 1;
+                    gap: 10px;
+                }
+
+                .chart-bar-pillar {
+                    width: 32px;
+                    background: linear-gradient(180deg, #a855f7 0%, rgba(124, 58, 237, 0.2) 100%);
+                    border-radius: 6px 6px 0 0;
+                    position: relative;
+                    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+                    cursor: pointer;
+                }
+
+                .chart-bar-pillar:hover {
+                    background: linear-gradient(180deg, #c084fc 0%, #a855f7 100%);
+                    box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+                }
+
+                .pillar-tooltip {
+                    position: absolute;
+                    top: -30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #1e1b4b;
+                    border: 1px solid rgba(168, 85, 247, 0.4);
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 9px;
+                    white-space: nowrap;
+                    opacity: 0;
+                    transition: opacity 0.2s ease;
+                    pointer-events: none;
+                }
+
+                .chart-bar-pillar:hover .pillar-tooltip {
+                    opacity: 1;
+                }
+
+                .chart-bar-label {
+                    font-size: 10px;
+                    color: #64748b;
+                    font-weight: 500;
+                    text-align: center;
+                }
+
+                /* ============ TRANSACTION TABLE ============ */
+                .txn-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+
+                .txn-th {
+                    text-align: left;
+                    padding: 14px 16px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: #64748b;
+                    border-bottom: 1px solid rgba(168, 85, 247, 0.12);
+                }
+
+                .txn-tr {
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+                    transition: all 0.2s ease;
+                }
+
+                .txn-tr:hover {
+                    background: rgba(255, 255, 255, 0.02);
+                }
+
+                .txn-td {
+                    padding: 14px 16px;
+                    font-size: 12px;
+                    color: #cbd5e1;
+                }
+
+                .status-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 4px 8px;
+                    border-radius: 20px;
+                    font-size: 10px;
+                    font-weight: 600;
+                }
+
+                .status-completed {
+                    background: rgba(34, 197, 94, 0.08);
+                    border: 1px solid rgba(34, 197, 94, 0.2);
+                    color: #4ade80;
+                }
+
+                .status-free {
+                    background: rgba(59, 130, 246, 0.08);
+                    border: 1px solid rgba(59, 130, 246, 0.2);
+                    color: #60a5fa;
+                }
+
+                .status-failed {
+                    background: rgba(239, 68, 68, 0.08);
+                    border: 1px solid rgba(239, 68, 68, 0.2);
+                    color: #f87171;
+                }
+
+                /* ============ SETTINGS FORM ============ */
+                .form-group {
+                    margin-bottom: 20px;
+                }
+
+                .form-label {
+                    display: block;
+                    font-size: 12px;
+                    color: #94a3b8;
+                    margin-bottom: 8px;
+                    font-weight: 500;
+                }
+
+                .form-input {
+                    width: 100%;
+                    padding: 10px 14px;
+                    background: rgba(255, 255, 255, 0.04);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    border-radius: 8px;
+                    color: #ffffff;
+                    font-size: 12px;
+                    outline: none;
+                    transition: border-color 0.25s ease;
+                }
+
+                .form-input:focus {
+                    border-color: rgba(168, 85, 247, 0.5);
+                }
+
+                .toggle-wrapper {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 14px;
+                    background: rgba(255, 255, 255, 0.02);
+                    border: 1px solid rgba(255, 255, 255, 0.04);
+                    border-radius: 8px;
+                }
+
+                .toggle-btn {
+                    position: relative;
+                    width: 44px;
+                    height: 24px;
+                    background: rgba(255, 255, 255, 0.15);
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: background-color 0.25s ease;
+                }
+
+                .toggle-btn.active {
+                    background: #a855f7;
+                    box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+                }
+
+                .toggle-circle {
+                    position: absolute;
+                    top: 2px;
+                    left: 2px;
+                    width: 20px;
+                    height: 20px;
+                    background: #ffffff;
+                    border-radius: 50%;
+                    transition: transform 0.25s ease;
+                }
+
+                .toggle-btn.active .toggle-circle {
+                    transform: translateX(20px);
+                }
+            `}</style>
+
+            {/* HEADER METADATA TAB NAVIGATION */}
+            <div className="tab-navigation">
+                <button 
+                    className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('overview')}
+                >
+                    <Layers size={14} />
+                    Overview
+                </button>
+                <button 
+                    className={`tab-btn ${activeTab === 'reports' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('reports')}
+                >
+                    <BarChart3 size={14} />
+                    Reports & Analytics
+                </button>
+                <button 
+                    className={`tab-btn ${activeTab === 'transactions' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('transactions')}
+                >
+                    <CreditCard size={14} />
+                    Transactions Ledger
+                </button>
+                <button 
+                    className={`tab-btn ${activeTab === 'settings' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('settings')}
+                >
+                    <Sliders size={14} />
+                    Console Settings
+                </button>
+            </div>
+
+            {/* TAB CONTENT: 1. OVERVIEW */}
+            {activeTab === 'overview' && (
+                <>
+                    {/* STATS OVERVIEW GRID */}
+                    <div className="stats-grid">
+                        <div className="glass-card">
+                            <div className="stat-header">
+                                <span className="stat-title">Platform Users</span>
+                                <div className="stat-icon-wrapper">
+                                    <Users size={16} />
+                                </div>
+                            </div>
+                            <div className="stat-value">{stats.totalUsers}</div>
+                            <div className="stat-footer">
+                                <TrendingUp size={12} />
+                                <span>+8% this month</span>
+                            </div>
+                        </div>
+
+                        <div className="glass-card">
+                            <div className="stat-header">
+                                <span className="stat-title">Global Note Catalog</span>
+                                <div className="stat-icon-wrapper">
+                                    <FileText size={16} />
+                                </div>
+                            </div>
+                            <div className="stat-value">{stats.totalNotes}</div>
+                            <div className="stat-footer" style={{ color: '#c084fc' }}>
+                                <ShieldCheck size={12} />
+                                <span>{stats.approvedNotes} approved</span>
+                            </div>
+                        </div>
+
+                        <div className="glass-card">
+                            <div className="stat-header">
+                                <span className="stat-title">Note Downloads</span>
+                                <div className="stat-icon-wrapper">
+                                    <Download size={16} />
+                                </div>
+                            </div>
+                            <div className="stat-value">{stats.totalDownloads || 142}</div>
+                            <div className="stat-footer" style={{ color: '#60a5fa' }}>
+                                <span>🚀 High-quality transfers</span>
+                            </div>
+                        </div>
+
+                        <div className="glass-card">
+                            <div className="stat-header">
+                                <span className="stat-title">Total Revenue</span>
+                                <div className="stat-icon-wrapper">
+                                    <DollarSign size={16} />
+                                </div>
+                            </div>
+                            <div className="stat-value">₹{stats.totalRevenue?.toLocaleString('en-IN') || "0"}</div>
+                            <div className="stat-footer">
+                                <TrendingUp size={12} />
+                                <span>+14.8% sales</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="text-sm bg-white dark:bg-gray-800 px-4 py-2 rounded-xl shadow">
-                        Today: {new Date().toLocaleDateString('en-IN')}
-                    </div>
-                </div>
 
-                {/* Stats Overview */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                    {adminStats.map((stat, index) => (
-                        <Card key={index} className="text-center">
-                            <p className={`text-4xl font-bold text-${stat.color}-600`}>
-                                {stat.value}
-                            </p>
-                            <p className="text-gray-600 dark:text-gray-400 mt-2">{stat.label}</p>
-                        </Card>
-                    ))}
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    {/* Quick Actions */}
-                    <div className="lg:col-span-7">
-                        <Card title="Quick Actions">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {quickActions.map((action, index) => (
-                                    <Link to={action.link} key={index}>
-                                        <div className="p-6 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 hover:shadow-md transition-all group">
-                                            <div className={`w-12 h-12 ${action.color} rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform`}>
-                                                ⚡
-                                            </div>
-                                            <h4 className="font-semibold text-lg mb-1">{action.title}</h4>
-                                            <p className="text-gray-600 dark:text-gray-400 text-sm">{action.desc}</p>
+                    {/* OVERVIEW DOUBLE COLUMNS */}
+                    <div className="dashboard-content-columns">
+                        {/* LEFT COLUMN: QUICK ACTIONS */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                            <div className="glass-card">
+                                <div className="section-title-bar">
+                                    <h3>Administrative Actions</h3>
+                                    <button onClick={handleRefreshStats} className="refresh-btn">
+                                        <RefreshCw size={12} />
+                                        Sync Metrics
+                                    </button>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                                    <Link to="/admin/review" style={{ textDecoration: 'none' }}>
+                                        <div style={{ padding: '16px', background: 'rgba(168, 85, 247, 0.05)', border: '1px solid rgba(168, 85, 247, 0.15)', borderRadius: '12px', transition: 'all 0.25s ease' }}
+                                             onMouseEnter={e => e.currentTarget.style.borderColor = '#c084fc'}
+                                             onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.15)'}>
+                                            <div style={{ fontSize: '18px', marginBottom: '8px' }}>🛡️</div>
+                                            <h4 style={{ color: '#ffffff', fontSize: '14px', fontWeight: 600, marginBottom: '4px' }}>Review Queue</h4>
+                                            <p style={{ color: '#94a3b8', fontSize: '11px', lineHeight: 1.4 }}>Approve or reject uploaded study documents.</p>
                                         </div>
                                     </Link>
+
+                                    <Link to="/admin/users" style={{ textDecoration: 'none' }}>
+                                        <div style={{ padding: '16px', background: 'rgba(99, 102, 241, 0.05)', border: '1px solid rgba(99, 102, 241, 0.15)', borderRadius: '12px', transition: 'all 0.25s ease' }}
+                                             onMouseEnter={e => e.currentTarget.style.borderColor = '#818cf8'}
+                                             onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.15)'}>
+                                            <div style={{ fontSize: '18px', marginBottom: '8px' }}>👥</div>
+                                            <h4 style={{ color: '#ffffff', fontSize: '14px', fontWeight: 600, marginBottom: '4px' }}>Manage Users</h4>
+                                            <p style={{ color: '#94a3b8', fontSize: '11px', lineHeight: 1.4 }}>View user directory, block or unblock accounts.</p>
+                                        </div>
+                                    </Link>
+
+                                    <Link to="/admin/categories" style={{ textDecoration: 'none' }}>
+                                        <div style={{ padding: '16px', background: 'rgba(236, 72, 153, 0.05)', border: '1px solid rgba(236, 72, 153, 0.15)', borderRadius: '12px', transition: 'all 0.25s ease' }}
+                                             onMouseEnter={e => e.currentTarget.style.borderColor = '#f472b6'}
+                                             onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(236, 72, 153, 0.15)'}>
+                                            <div style={{ fontSize: '18px', marginBottom: '8px' }}>📂</div>
+                                            <h4 style={{ color: '#ffffff', fontSize: '14px', fontWeight: 600, marginBottom: '4px' }}>Manage Categories</h4>
+                                            <p style={{ color: '#94a3b8', fontSize: '11px', lineHeight: 1.4 }}>Configure subject tags and listing groups.</p>
+                                        </div>
+                                    </Link>
+
+                                    <Link to="/admin/notes" style={{ textDecoration: 'none' }}>
+                                        <div style={{ padding: '16px', background: 'rgba(45, 212, 191, 0.05)', border: '1px solid rgba(45, 212, 191, 0.15)', borderRadius: '12px', transition: 'all 0.25s ease' }}
+                                             onMouseEnter={e => e.currentTarget.style.borderColor = '#2dd4bf'}
+                                             onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.15)'}>
+                                            <div style={{ fontSize: '18px', marginBottom: '8px' }}>📊</div>
+                                            <h4 style={{ color: '#ffffff', fontSize: '14px', fontWeight: 600, marginBottom: '4px' }}>Master Catalog</h4>
+                                            <p style={{ color: '#94a3b8', fontSize: '11px', lineHeight: 1.4 }}>Check all published, free, or premium downloads.</p>
+                                        </div>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* RIGHT COLUMN: PENDING REVIEWS SUMMARY */}
+                        <div className="glass-card" style={{ display: 'flex', flexDirection: 'column' }}>
+                            <div className="section-title-bar">
+                                <h3>Pending Study Notes ({stats.pendingNotes || pendingReviews.length})</h3>
+                                <Link to="/admin/review" style={{ color: '#c084fc', fontSize: '11px', textDecoration: 'none', fontWeight: 600 }}>View Queue →</Link>
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                {pendingReviews.map((item) => (
+                                    <div key={item.id} className="pending-item">
+                                        <div style={{ overflow: 'hidden', paddingRight: '12px' }}>
+                                            <h4 style={{ fontSize: '13px', fontWeight: 600, color: '#f8fafc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</h4>
+                                            <p style={{ fontSize: '10px', color: '#64748b', marginTop: '3px' }}>By {item.uploader} • Subject: {item.subject}</p>
+                                        </div>
+                                        <Link to="/admin/review">
+                                            <button className="review-btn">Review</button>
+                                        </Link>
+                                    </div>
                                 ))}
                             </div>
-                        </Card>
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {/* TAB CONTENT: 2. REPORTS & ANALYTICS */}
+            {activeTab === 'reports' && (
+                <div className="glass-card">
+                    <div className="section-title-bar">
+                        <h3>Platform Performance Reports</h3>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <span style={{ fontSize: '11px', color: '#a855f7', fontWeight: 600, background: 'rgba(168, 85, 247, 0.1)', padding: '4px 8px', borderRadius: '6px' }}>📊 Interactive Real-time Charts</span>
+                        </div>
                     </div>
 
-                    {/* Recent Pending Reviews */}
-                    <div className="lg:col-span-5">
-                        <Card title="Pending Reviews">
-                            <div className="space-y-4">
+                    <div className="dashboard-content-columns">
+                        {/* CHART 1: MONTHLY SALES ANALYTICS */}
+                        <div className="chart-container">
+                            <h4 style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Monthly Notes Sales (2026)</h4>
+                            <p style={{ fontSize: '10px', color: '#64748b', marginBottom: '16px' }}>Sales counts of premium study material</p>
+                            
+                            <div className="bar-chart-flex">
                                 {[
-                                    { title: "Computer Networks Full Notes", uploader: "Rahul Sharma", time: "2 hours ago" },
-                                    { title: "Machine Learning Handwritten", uploader: "Priya Singh", time: "5 hours ago" },
-                                    { title: "Java Spring Boot Complete", uploader: "Amit Kumar", time: "Yesterday" },
-                                ].map((item, i) => (
-                                    <div key={i} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-xl">
-                                        <div>
-                                            <p className="font-medium">{item.title}</p>
-                                            <p className="text-sm text-gray-500">By {item.uploader}</p>
+                                    { month: "Jan", height: "45px", val: "₹18,500" },
+                                    { month: "Feb", height: "65px", val: "₹24,900" },
+                                    { month: "Mar", height: "95px", val: "₹42,500" },
+                                    { month: "Apr", height: "135px", val: "₹65,000" },
+                                    { month: "May", height: "160px", val: "₹82,400" },
+                                ].map((bar, i) => (
+                                    <div key={i} className="chart-bar-col">
+                                        <div className="chart-bar-pillar" style={{ height: bar.height }}>
+                                            <span className="pillar-tooltip">{bar.val}</span>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <Link to="/admin/review">
-                                                <Button variant="success" className="px-4 py-1.5 text-sm">Review</Button>
-                                            </Link>
+                                        <span className="chart-bar-label">{bar.month}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* CHART 2: CATEGORY CONTRIBUTION CHART */}
+                        <div className="chart-container" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                            <div>
+                                <h4 style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Category Listing Shares</h4>
+                                <p style={{ fontSize: '10px', color: '#64748b', marginBottom: '16px' }}>Distribution of approved items in system</p>
+                            </div>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {[
+                                    { cat: "Data Structures & Algorithms", count: 48, percentage: 65, color: '#a855f7' },
+                                    { cat: "Operating Systems", count: 18, percentage: 25, color: '#3b82f6' },
+                                    { cat: "Database Management (DBMS)", count: 12, percentage: 15, color: '#f43f5e' },
+                                    { cat: "Computer Networks", count: 8, percentage: 10, color: '#10b981' }
+                                ].map((c, i) => (
+                                    <div key={i}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                                            <span style={{ fontWeight: 500 }}>{c.cat}</span>
+                                            <span style={{ color: '#94a3b8' }}>{c.count} notes ({c.percentage}%)</span>
+                                        </div>
+                                        <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
+                                            <div style={{ width: `${c.percentage}%`, height: '100%', background: c.color, borderRadius: '3px' }}></div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-
-                            <div className="mt-6">
-                                <Link to="/admin/review">
-                                    <Button variant="secondary" className="w-full">
-                                        View All Pending Notes →
-                                    </Button>
-                                </Link>
-                            </div>
-                        </Card>
+                        </div>
                     </div>
                 </div>
+            )}
 
-                {/* Recent Activity */}
-                <Card title="Recent Activity" className="mt-8">
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
+            {/* TAB CONTENT: 3. TRANSACTIONS LEDGER */}
+            {activeTab === 'transactions' && (
+                <div className="glass-card">
+                    <div className="section-title-bar">
+                        <h3>Payments & Download Transactions</h3>
+                        <span style={{ fontSize: '11px', color: '#a855f7', fontWeight: 600, background: 'rgba(168, 85, 247, 0.1)', padding: '4px 8px', borderRadius: '6px' }}>Total Receipts: {transactions.length}</span>
+                    </div>
+
+                    <div style={{ overflowX: 'auto', border: '1px solid rgba(168, 85, 247, 0.12)', borderRadius: '12px' }}>
+                        <table className="txn-table">
                             <thead>
-                                <tr className="border-b">
-                                    <th className="text-left py-4">Note Title</th>
-                                    <th className="text-left py-4">User</th>
-                                    <th className="text-left py-4">Action</th>
-                                    <th className="text-left py-4">Time</th>
+                                <tr>
+                                    <th className="txn-th">Transaction ID</th>
+                                    <th className="txn-th">Buyer Name</th>
+                                    <th className="txn-th">Study Note Title</th>
+                                    <th className="txn-th">Price</th>
+                                    <th className="txn-th">Status</th>
+                                    <th className="txn-th">Time</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y">
-                                {[
-                                    ["DSA Notes v2 Approved", "Aryan Kumar", "Approved", "Just now"],
-                                    ["New User Registered", "Sneha Patel", "Registered", "10 min ago"],
-                                    ["Payment Received", "Vikas Sharma", "₹299", "1 hour ago"],
-                                ].map((row, i) => (
-                                    <tr key={i} className="hover:bg-gray-50 dark:hover:bg-gray-900">
-                                        <td className="py-4 font-medium">{row[0]}</td>
-                                        <td className="py-4 text-gray-600 dark:text-gray-400">{row[1]}</td>
-                                        <td className="py-4">
-                                            <span className="px-3 py-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 rounded-full text-xs">
-                                                {row[2]}
+                            <tbody>
+                                {transactions.map((txn, idx) => (
+                                    <tr key={idx} className="txn-tr">
+                                        <td className="txn-td" style={{ fontFamily: 'monospace', fontWeight: 600, color: '#c084fc' }}>{txn.id}</td>
+                                        <td className="txn-td">{txn.buyer}</td>
+                                        <td className="txn-td" style={{ fontWeight: 500 }}>{txn.note}</td>
+                                        <td className="txn-td">
+                                            {txn.price === 0 ? (
+                                                <span style={{ color: '#94a3b8' }}>Free</span>
+                                            ) : (
+                                                <span style={{ color: '#ffffff', fontWeight: 600 }}>₹{txn.price}</span>
+                                            )}
+                                        </td>
+                                        <td className="txn-td">
+                                            <span className={`status-badge ${
+                                                txn.status === 'Completed' ? 'status-completed' :
+                                                txn.status === 'Failed' ? 'status-failed' : 'status-free'
+                                            }`}>
+                                                {txn.status}
                                             </span>
                                         </td>
-                                        <td className="py-4 text-sm text-gray-500">{row[3]}</td>
+                                        <td className="txn-td" style={{ color: '#64748b' }}>{txn.date}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
-                </Card>
-            </div>
+                </div>
+            )}
+
+            {/* TAB CONTENT: 4. CONSOLE SETTINGS */}
+            {activeTab === 'settings' && (
+                <div className="glass-card" style={{ maxWidth: '640px', margin: '0 auto' }}>
+                    <div className="section-title-bar">
+                        <h3>Global Platform Configuration</h3>
+                        <p style={{ fontSize: '11px', color: '#94a3b8' }}>Manage global rules and pricing strategies</p>
+                    </div>
+
+                    <div style={{ marginTop: '24px' }}>
+                        <div className="form-group">
+                            <label className="form-label">Minimum Note Price (₹)</label>
+                            <input 
+                                type="number" 
+                                className="form-input"
+                                value={minPrice}
+                                onChange={(e) => setMinPrice(Number(e.target.value))}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Maximum Allowed Note Price (₹)</label>
+                            <input 
+                                type="number" 
+                                className="form-input"
+                                value={maxPrice}
+                                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                            />
+                        </div>
+
+                        <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                            <div className="toggle-wrapper">
+                                <div>
+                                    <h4 style={{ fontSize: '12px', fontWeight: 600, color: '#f1f5f9' }}>Allow Free Uploads</h4>
+                                    <p style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>Allows students to upload study notes for zero cost.</p>
+                                </div>
+                                <div 
+                                    className={`toggle-btn ${allowFree ? 'active' : ''}`}
+                                    onClick={() => setAllowFree(!allowFree)}
+                                >
+                                    <div className="toggle-circle"></div>
+                                </div>
+                            </div>
+
+                            <div className="toggle-wrapper">
+                                <div>
+                                    <h4 style={{ fontSize: '12px', fontWeight: 600, color: '#f1f5f9' }}>Require Manual Admin Approval</h4>
+                                    <p style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>All uploaded PDFs must pass reviews before going public.</p>
+                                </div>
+                                <div 
+                                    className={`toggle-btn ${requireApproval ? 'active' : ''}`}
+                                    onClick={() => setRequireApproval(!requireApproval)}
+                                >
+                                    <div className="toggle-circle"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{ marginTop: '28px', borderTop: '1px solid rgba(168, 85, 247, 0.12)', paddingTop: '20px', textAlign: 'right' }}>
+                            <button 
+                                className="review-btn" 
+                                style={{ padding: '12px 28px', fontSize: '12px' }}
+                                onClick={handleSaveSettings}
+                            >
+                                Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

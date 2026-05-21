@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { User, Mail, Lock, Shield, BookOpen, Download, Save, Camera } from 'lucide-react';
 import toast from 'react-hot-toast';
+import api from '../../services/api';
 
 export default function Profile() {
-    const { user, login } = useAuth(); // Destructuring login just as a mock way to update local storage if needed
+    const { user, login } = useAuth();
 
     const [formData, setFormData] = useState({
         fullName: user?.fullName || '',
@@ -13,7 +14,30 @@ export default function Profile() {
         confirmPassword: ''
     });
 
+    const [stats, setStats] = useState({ uploadedCount: 0, purchasedCount: 0 });
+    const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+
+    useEffect(() => {
+        const fetchProfileStats = async () => {
+            try {
+                setLoading(true);
+                const [uploadsRes, purchasedRes] = await Promise.all([
+                    api.get('/notes/my-uploads').catch(() => ({ data: [] })),
+                    api.get('/notes/purchased').catch(() => ({ data: [] }))
+                ]);
+                setStats({
+                    uploadedCount: uploadsRes.data?.length || 0,
+                    purchasedCount: purchasedRes.data?.length || 0
+                });
+            } catch (err: any) {
+                console.error("Error loading profile stats:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProfileStats();
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -351,12 +375,12 @@ export default function Profile() {
                         <div className="stats-container">
                             <div className="stat-box">
                                 <BookOpen size={24} className="stat-icon" />
-                                <div className="stat-value">12</div>
+                                <div className="stat-value">{stats.uploadedCount}</div>
                                 <div className="stat-label">Notes Uploaded</div>
                             </div>
                             <div className="stat-box">
                                 <Download size={24} className="stat-icon" style={{ color: '#34d399' }} />
-                                <div className="stat-value">28</div>
+                                <div className="stat-value">{stats.purchasedCount}</div>
                                 <div className="stat-label">Notes Downloaded</div>
                             </div>
                         </div>

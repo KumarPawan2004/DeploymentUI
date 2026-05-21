@@ -4,22 +4,54 @@ import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import api from '../../services/api';
 
 export default function UserDashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState({
-    totalNotes: 124,
-    myPurchases: 8,
-    uploadedNotes: 3,
-    pendingReviews: 2
+    totalNotes: 0,
+    myPurchases: 0,
+    uploadedNotes: 0,
+    pendingReviews: 0
   });
 
-  // Mock recent notes (replace with API call later)
-  const recentNotes = [
-    { id: 1, title: "Data Structures Complete Notes", subject: "DSA", price: 0, status: "Approved" },
-    { id: 2, title: "Operating System Handwritten Notes", subject: "OS", price: 149, status: "Approved" },
-    { id: 3, title: "DBMS Revision Notes", subject: "DBMS", price: 99, status: "Pending" },
-  ];
+  const [recentNotes, setRecentNotes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      try {
+        setLoading(true);
+        const [notesRes, purchasedRes, uploadsRes] = await Promise.all([
+          api.get('/notes').catch(() => ({ data: [] })),
+          api.get('/notes/purchased').catch(() => ({ data: [] })),
+          api.get('/notes/my-uploads').catch(() => ({ data: [] }))
+        ]);
+
+        const platformNotesCount = notesRes.data?.length || 0;
+        const myPurchasesCount = purchasedRes.data?.length || 0;
+        const myUploads = uploadsRes.data || [];
+        const myUploadsCount = myUploads.length;
+        const pendingCount = myUploads.filter((n: any) => n.status === 'Pending').length;
+
+        setStats({
+          totalNotes: platformNotesCount,
+          myPurchases: myPurchasesCount,
+          uploadedNotes: myUploadsCount,
+          pendingReviews: pendingCount
+        });
+
+        // Show latest 3 uploads as recent notes
+        setRecentNotes(myUploads.slice(0, 3));
+      } catch (err: any) {
+        console.error("Error loading dashboard stats:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboardData();
+  }, []);
 
   const styles = `
   .dashboard-container {
@@ -334,11 +366,35 @@ export default function UserDashboard() {
   }
 `;
 
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', fontFamily: 'Inter, sans-serif' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            border: '3px solid rgba(168, 85, 247, 0.1)',
+            borderTop: '3px solid #a855f7',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }}></div>
+          <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+          <p style={{ color: '#94a3b8', fontSize: '14px', fontWeight: 500 }}>Syncing your academic profile...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <style>{styles}</style>
       <div className="dashboard-container">
-
+        
+        {/* Welcome Banner */}
+        <div className="dashboard-header">
+          <h1>Welcome back, {user?.fullName || 'Academic Student'} 👋</h1>
+          <p>Access your study workspace, track pending reviews, and explore curated knowledge packs.</p>
+        </div>
 
         {/* Stats Cards */}
         <div className="dash-stats-grid">
@@ -391,24 +447,32 @@ export default function UserDashboard() {
           {/* Recent Activity */}
           <div className="recent-notes-col">
             <div className="dashboard-card">
-              <h3 className="card-title">Recent Notes</h3>
+              <h3 className="card-title">Recent Uploads</h3>
               <div className="notes-list">
-                {recentNotes.map((note) => (
-                  <div key={note.id} className="note-item">
-                    <div>
-                      <h4 className="note-title">{note.title}</h4>
-                      <p className="note-meta">{note.subject} • {note.price === 0 ? "Free" : `₹${note.price}`}</p>
-                    </div>
-                    <div className={`status-badge ${note.status === 'Approved' ? 'status-approved' : 'status-pending'}`}>
-                      {note.status}
-                    </div>
+                {recentNotes.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '36px 0', color: '#64748b' }}>
+                    <p style={{ fontSize: '32px', marginBottom: '8px' }}>📂</p>
+                    <p style={{ fontSize: '13px', fontWeight: 600, color: '#f8fafc' }}>No uploads yet</p>
+                    <p style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>Your uploaded files will appear here.</p>
                   </div>
-                ))}
+                ) : (
+                  recentNotes.map((note) => (
+                    <div key={note.id} className="note-item">
+                      <div>
+                        <h4 className="note-title">{note.title}</h4>
+                        <p className="note-meta">{note.subject} • {note.price === 0 ? "Free" : `₹${note.price}`}</p>
+                      </div>
+                      <div className={`status-badge ${note.status === 'Approved' ? 'status-approved' : 'status-pending'}`}>
+                        {note.status}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
 
               <div className="view-all-container">
-                <Link to="/browse" className="btn-outline">
-                  Browse All Notes →
+                <Link to="/my-uploads" className="btn-outline">
+                  View All Uploads →
                 </Link>
               </div>
             </div>

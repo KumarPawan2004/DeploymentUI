@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import RoleSelection from './pages/auth/RoleSelection';
 
 import UserLayout from './components/layout/UserLayout';
 import AdminLayout from './components/layout/AdminLayout';
@@ -37,12 +38,20 @@ function App() {
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route
+            path="/role-selection"
+            element={
+              <ProtectedRoute allowedRoles={['Admin']}>
+                <RoleSelection />
+              </ProtectedRoute>
+            }
+          />
 
           {/* USER ROUTES */}
           <Route
             path="/"
             element={
-              <ProtectedRoute allowedRoles={['User']}>
+              <ProtectedRoute allowedRoles={['User', 'Admin']}>
                 <UserLayout />
               </ProtectedRoute>
             }

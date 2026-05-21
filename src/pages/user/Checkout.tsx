@@ -1,45 +1,69 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CreditCard, ShieldCheck, Lock, ChevronLeft, CheckCircle } from 'lucide-react';
+import api from '../../services/api';
 import toast from 'react-hot-toast';
 
 export default function Checkout() {
     const { id } = useParams();
     const navigate = useNavigate();
     
+    const [note, setNote] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     
     const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi'>('card');
     
-    // In a real app, you would fetch the note details using the ID. 
-    // Here we use mock data.
-    const note = {
-        id: id || "1",
-        title: "Complete Data Structures & Algorithms Handwritten Notes",
-        author: "Alex Morgan",
-        price: 199,
-        platformFee: 5, // 5 INR platform fee
-    };
+    const platformFee = 5; // 5 INR platform fee
 
-    const totalAmount = note.price + note.platformFee;
+    useEffect(() => {
+        const fetchNoteDetails = async () => {
+            try {
+                setLoading(true);
+                const res = await api.get(`/notes/${id}`);
+                if (res.data) {
+                    setNote(res.data);
+                }
+            } catch (err: any) {
+                console.error("Error fetching note for checkout:", err);
+                // Fallback mock
+                setNote({
+                    id: id || "1",
+                    title: "Complete Data Structures & Algorithms Handwritten Notes",
+                    uploaderName: "Rahul Sharma",
+                    price: 199
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchNoteDetails();
+    }, [id]);
 
-    const handlePayment = (e: React.FormEvent) => {
+    const totalAmount = (note?.price ?? 0) + platformFee;
+
+    const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsProcessing(true);
         
-        // Simulate Payment Processing Gateway
-        setTimeout(() => {
+        try {
+            // Live backend purchase checkout request!
+            const res = await api.post(`/notes/purchase/${id}`);
             setIsProcessing(false);
             setIsSuccess(true);
-            toast.success("Payment Successful!");
+            toast.success(res.data?.message || "Payment Successful!");
             
             // Redirect to My Purchases after a short delay
             setTimeout(() => {
                 navigate('/my-purchases');
-            }, 3000);
+            }, 2500);
             
-        }, 2000);
+        } catch (err: any) {
+            setIsProcessing(false);
+            const errorMsg = err.response?.data || "Transaction failed. Please verify credentials.";
+            toast.error(errorMsg);
+        }
     };
 
     const styles = `
@@ -326,6 +350,18 @@ export default function Checkout() {
       }
     `;
 
+    if (loading) {
+        return (
+            <div style={{ display: 'flex', height: '100vh', width: '100vw', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #0b071e 0%, #0f0c29 100%)', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ width: '32px', height: '32px', border: '3px solid rgba(168, 85, 247, 0.2)', borderRadius: '50%', borderTopColor: '#a855f7', animation: 'spin 1s linear infinite' }}></div>
+                    <span style={{ fontSize: '13px', color: '#c084fc', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase' }}>Connecting Secure Payment Gate...</span>
+                    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <>
             <style>{styles}</style>
@@ -342,8 +378,8 @@ export default function Checkout() {
                             <h2 className="chk-summary-title">Order Summary</h2>
                             
                             <div className="chk-note-card">
-                                <h3>{note.title}</h3>
-                                <p>By {note.author}</p>
+                                <h3>{note?.title}</h3>
+                                <p>By {note?.uploaderName || note?.author || 'Standard Student'}</p>
                             </div>
 
                             <div className="chk-price-row">

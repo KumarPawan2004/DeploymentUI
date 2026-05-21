@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import toast from 'react-hot-toast';
+import api from '../../services/api';
 
 interface Note {
   id: string;
@@ -12,69 +13,61 @@ interface Note {
   uploadedBy: string;
   rating: number;
   downloads: number;
+  fileName: string;
 }
 
 export default function BrowseNotes() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [priceFilter, setPriceFilter] = useState<'All' | 'Free' | 'Paid'>('All');
+  
+  const [allNotes, setAllNotes] = useState<Note[]>([]);
+  const [categories, setCategories] = useState<string[]>(['All']);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock Data
-  const allNotes: Note[] = [
-    {
-      id: "1",
-      title: "Complete Data Structures & Algorithms Handwritten Notes",
-      subject: "DSA",
-      category: "Computer Science",
-      price: 0,
-      uploadedBy: "Rahul Sharma",
-      rating: 4.8,
-      downloads: 1240
-    },
-    {
-      id: "2",
-      title: "Operating System Full Notes with PYQs",
-      subject: "OS",
-      category: "Computer Science",
-      price: 149,
-      uploadedBy: "Priya Singh",
-      rating: 4.9,
-      downloads: 890
-    },
-    {
-      id: "3",
-      title: "DBMS Complete Revision Notes",
-      subject: "DBMS",
-      category: "Computer Science",
-      price: 99,
-      uploadedBy: "Amit Kumar",
-      rating: 4.7,
-      downloads: 650
-    },
-    {
-      id: "4",
-      title: "Mathematics Engineering Notes",
-      subject: "Maths",
-      category: "Mathematics",
-      price: 0,
-      uploadedBy: "Sneha Patel",
-      rating: 4.5,
-      downloads: 420
-    },
-    {
-      id: "5",
-      title: "Computer Networks Complete Guide",
-      subject: "CN",
-      category: "Computer Science",
-      price: 199,
-      uploadedBy: "Vikas Sharma",
-      rating: 4.6,
-      downloads: 310
-    },
-  ];
+  useEffect(() => {
+    const loadBrowseData = async () => {
+      try {
+        setLoading(true);
+        const [notesRes, catsRes, wishlistRes] = await Promise.all([
+          api.get('/notes'),
+          api.get('/categories'),
+          api.get('/notes/wishlist').catch(() => ({ data: [] }))
+        ]);
 
-  const categories = ['All', 'Computer Science', 'DSA', 'Mathematics', 'Others'];
+        if (notesRes.data) {
+          const mappedNotes = notesRes.data.map((n: any) => ({
+            id: n.id.toString(),
+            title: n.title,
+            subject: n.subject,
+            category: n.category,
+            price: n.price,
+            uploadedBy: n.uploaderName || "Anonymous",
+            rating: 4.8, // Default decorative academic rating
+            downloads: n.downloads || 0,
+            fileName: n.fileName || "document.pdf"
+          }));
+          setAllNotes(mappedNotes);
+        }
+
+        if (catsRes.data) {
+          const loadedCats = ['All', ...catsRes.data.map((c: any) => c.name)];
+          setCategories(loadedCats);
+        }
+
+        if (wishlistRes.data) {
+          setWishlistIds(wishlistRes.data.map((w: any) => w.id.toString()));
+        }
+      } catch (err: any) {
+        console.error("Error fetching browse data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBrowseData();
+  }, []);
 
   const filteredNotes = allNotes.filter(note => {
     const matchesSearch = note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -90,16 +83,43 @@ export default function BrowseNotes() {
     return matchesSearch && matchesCategory && matchesPrice;
   });
 
-  const toggleWishlist = (id: string) => {
-    setWishlistIds(prev => {
-      if (prev.includes(id)) {
+  const toggleWishlist = async (id: string) => {
+    try {
+      if (wishlistIds.includes(id)) {
+        // Toggle client-side since only POST is defined in endpoint
+        setWishlistIds(prev => prev.filter(noteId => noteId !== id));
         toast.success("Removed from Wishlist");
-        return prev.filter(noteId => noteId !== id);
       } else {
+        await api.post(`/notes/wishlist/${id}`);
+        setWishlistIds(prev => [...prev, id]);
         toast.success("Added to Wishlist!");
-        return [...prev, id];
       }
-    });
+    } catch (err: any) {
+      console.error(err);
+      toast.error("Failed to update wishlist");
+    }
+  };
+
+  const handleDownload = async (id: string, fileName: string) => {
+    try {
+      toast.loading("Initiating download...", { id: "download" });
+      const response = await api.get(`/notes/download/${id}`, {
+        responseType: 'blob'
+      });
+      
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success("Downloaded successfully!", { id: "download" });
+    } catch (err: any) {
+      console.error("Download error:", err);
+      toast.error("You must purchase this premium note first to download it.", { id: "download" });
+    }
   };
 
   const styles = `
@@ -506,7 +526,7 @@ export default function BrowseNotes() {
                 </Link>
 
                 {note.price === 0 ? (
-                  <button className="btn btn-success" onClick={() => toast.success("Downloading...")}>
+                  <button className="btn btn-success" onClick={() => handleDownload(note.id, note.fileName)}>
                     Download
                   </button>
                 ) : (

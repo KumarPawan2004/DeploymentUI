@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 import toast from 'react-hot-toast';
 import { UploadCloud, FileText, CheckCircle, X, DollarSign, Gift, Info } from 'lucide-react';
 
@@ -18,6 +19,22 @@ export default function UploadNote() {
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get('/categories');
+        if (res.data) {
+          setCategories(res.data);
+        }
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+        setCategories([]);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -65,11 +82,29 @@ export default function UploadNote() {
 
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const data = new FormData();
+      data.append('title', formData.title);
+      data.append('subject', formData.subject);
+      data.append('category', formData.category);
+      data.append('description', formData.description);
+      data.append('price', formData.price.toString());
+      data.append('file', file);
+
+      await api.post('/notes/upload', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
       toast.success("Note uploaded successfully! Sent for Admin Review.");
       navigate('/my-uploads');
-    }, 1500);
+    } catch (err: any) {
+      const errorMsg = err.response?.data || "Failed to submit note for review.";
+      toast.error(errorMsg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const styles = `
@@ -528,11 +563,11 @@ export default function UploadNote() {
                   required
                 >
                   <option value="">Select Category</option>
-                  <option value="Computer Science">Computer Science</option>
-                  <option value="DSA">Data Structures & Algorithms</option>
-                  <option value="OS">Operating System</option>
-                  <option value="DBMS">Database Management</option>
-                  <option value="Mathematics">Mathematics</option>
+                  {categories.map((cat: any) => (
+                    <option key={cat.id || cat.name} value={cat.name}>
+                      {cat.name}
+                    </option>
+                  ))}
                   <option value="Others">Others</option>
                 </select>
               </div>

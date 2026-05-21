@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { Download, Eye, Book, CreditCard, Calendar, Library, ArrowRight } from 'lucide-react';
+import toast from 'react-hot-toast';
+import api from '../../services/api';
 
 interface PurchasedNote {
     id: string;
@@ -9,46 +11,74 @@ interface PurchasedNote {
     price: number;
     purchasedAt: string;
     downloaded: number;
+    fileName: string;
 }
 
 export default function MyPurchases() {
-    const [purchasedNotes, setPurchasedNotes] = useState<PurchasedNote[]>([
-        {
-            id: "1",
-            title: "Complete Data Structures & Algorithms Handwritten Notes",
-            subject: "DSA",
-            price: 199,
-            purchasedAt: "10 May 2026",
-            downloaded: 3
-        },
-        {
-            id: "2",
-            title: "Operating System Full Notes with Diagrams",
-            subject: "OS",
-            price: 149,
-            purchasedAt: "5 May 2026",
-            downloaded: 1
-        },
-        {
-            id: "3",
-            title: "Computer Networks Complete Guide",
-            subject: "CN",
-            price: 179,
-            purchasedAt: "28 April 2026",
-            downloaded: 5
-        },
-    ]);
+    const [purchasedNotes, setPurchasedNotes] = useState<PurchasedNote[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const { globalSearch } = useOutletContext<{ globalSearch: string }>();
+
+    useEffect(() => {
+        const fetchPurchases = async () => {
+            try {
+                setLoading(true);
+                const res = await api.get('/notes/purchased');
+                if (res.data) {
+                    const mapped = res.data.map((n: any) => ({
+                        id: n.id.toString(),
+                        title: n.title,
+                        subject: n.subject,
+                        price: n.price,
+                        purchasedAt: new Date(n.uploadedAt).toLocaleDateString('en-IN', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        }),
+                        downloaded: n.downloads || 0,
+                        fileName: n.fileName || `${n.title.replace(/\s+/g, '_')}.pdf`
+                    }));
+                    setPurchasedNotes(mapped);
+                }
+            } catch (err: any) {
+                console.error("Error loading purchases:", err);
+                toast.error("Failed to load purchased library.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPurchases();
+    }, []);
 
     const filteredNotes = purchasedNotes.filter(note =>
         note.title.toLowerCase().includes(globalSearch.toLowerCase()) ||
         note.subject.toLowerCase().includes(globalSearch.toLowerCase())
     );
 
-    const handleDownload = (note: PurchasedNote) => {
-        alert(`Downloading: ${note.title}`);
-        // In real app → call API to download PDF
+    const handleDownload = async (note: PurchasedNote) => {
+        try {
+            toast.loading(`Downloading ${note.title}...`, { id: "download" });
+            const response = await api.get(`/notes/download/${note.id}`, {
+                responseType: 'blob'
+            });
+            
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.setAttribute('download', note.fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            toast.success("PDF Downloaded successfully!", { id: "download" });
+            
+            // Increment local counter for responsive UX
+            setPurchasedNotes(prev => prev.map(n => n.id === note.id ? { ...n, downloaded: n.downloaded + 1 } : n));
+        } catch (err: any) {
+            console.error("Download error:", err);
+            toast.error("Failed to download PDF. Please check backend connection.", { id: "download" });
+        }
     };
 
     const styles = `
@@ -276,6 +306,25 @@ export default function MyPurchases() {
       }
     `;
 
+    if (loading) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', fontFamily: 'Inter, sans-serif' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+                    <div style={{
+                        width: '48px',
+                        height: '48px',
+                        border: '3px solid rgba(129, 140, 248, 0.1)',
+                        borderTop: '3px solid #818cf8',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                    }}></div>
+                    <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                    <p style={{ color: '#94a3b8', fontSize: '14px', fontWeight: 500 }}>Syncing your purchased library...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <>
             <style>{styles}</style>
@@ -339,13 +388,13 @@ export default function MyPurchases() {
                                             <Download size={18} />
                                             Download PDF
                                         </button>
-                                        <button 
+                                        <Link 
+                                            to={`/browse/note/${note.id}`}
                                             className="action-btn btn-view"
-                                            onClick={() => alert(`Opening details for: ${note.title}`)}
                                         >
                                             <Eye size={18} />
                                             View Details
-                                        </button>
+                                        </Link>
                                     </div>
                                     <div className="download-count">
                                         Downloaded {note.downloaded} time{note.downloaded !== 1 ? 's' : ''}
