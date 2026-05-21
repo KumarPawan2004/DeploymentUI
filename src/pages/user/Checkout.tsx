@@ -388,7 +388,7 @@ export default function Checkout() {
                             </div>
                             <div className="chk-price-row">
                                 <span>Platform Fee</span>
-                                <span>₹{note.platformFee.toFixed(2)}</span>
+                                <span>₹{platformFee.toFixed(2)}</span>
                             </div>
                             
                             <div className="chk-price-row total">

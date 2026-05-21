@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { User, Mail, Lock, Eye, EyeOff, ArrowLeft, CheckCircle, Shield } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowLeft, CheckCircle } from 'lucide-react';
 import api from '../../services/api';
 
 export default function Register() {
@@ -352,29 +352,19 @@ export default function Register() {
                                 <button
                                     type="button"
                                     onClick={() => setSelectedRole('User')}
-                                    style={selectedRole === 'User' ? s.roleButtonActive('User') : s.roleButtonInactive}
+                                    style={s.roleButtonActive('User')}
                                 >
                                     <User size={15} />
                                     Student / User
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setSelectedRole('Admin')}
-                                    style={selectedRole === 'Admin' ? s.roleButtonActive('Admin') : s.roleButtonInactive}
-                                >
-                                    <Shield size={15} />
-                                    Admin Account
                                 </button>
                             </div>
                         </div>
 
                         {/* Role Description Box */}
-                        <div style={s.roleInfoBox(selectedRole)}>
+                        <div style={s.roleInfoBox('User')}>
                             <div style={{ marginTop: '1px', fontSize: '12px' }}>💡</div>
                             <p style={s.roleInfoText}>
-                                {selectedRole === 'Admin' 
-                                    ? 'Administrative requests undergo master credential confirmation. Access manages core portals, audits files, and directs user bans.' 
-                                    : 'Student accounts gain seamless capabilities to share notes, purchase paid review sets, build profile libraries, and write reviews.'}
+                                Student accounts gain seamless capabilities to share notes, purchase paid review sets, build profile libraries, and write reviews.
                             </p>
                         </div>
                     </div>
@@ -386,7 +376,7 @@ export default function Register() {
                     <div style={s.rightCol}>
                         <div style={s.cardHeader}>
                             <h2 style={s.cardTitle}>Create your account</h2>
-                            <p style={s.cardSubtitle}>Sign up as {selectedRole === 'Admin' ? 'Admin' : 'User'} to get started</p>
+                            <p style={s.cardSubtitle}>Sign up as Student to get started</p>
                         </div>
 
                         <form onSubmit={handleSubmit} style={s.form}>

@@ -192,8 +192,32 @@ export default function ReviewNotes() {
             const fileURL = URL.createObjectURL(file);
             window.open(fileURL, '_blank');
             toast.success("Document loaded for preview!", { id: "download" });
-        } catch (e) {
-            // Mock preview fallback
+        } catch (err: any) {
+            console.error("Preview download failed:", err);
+            
+            // Check if backend returned a specific error message
+            if (err.response?.data) {
+                try {
+                    let text = "";
+                    if (err.response.data instanceof Blob) {
+                        text = await err.response.data.text();
+                    } else {
+                        text = typeof err.response.data === 'string' ? err.response.data : JSON.stringify(err.response.data);
+                    }
+                    
+                    try {
+                        const parsed = JSON.parse(text);
+                        toast.error(`Backend Error: ${parsed.message || text}`, { id: "download" });
+                    } catch {
+                        toast.error(`Backend Error: ${text}`, { id: "download" });
+                    }
+                    return;
+                } catch (readErr) {
+                    console.error("Error reading backend error blob:", readErr);
+                }
+            }
+
+            // Fallback for offline mock notes
             toast.success("Document opened in standard browser sandbox!", { id: "download" });
             window.open('https://pdfobject.com/pdf/sample.pdf', '_blank');
         }
