@@ -28,7 +28,6 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
         const redirectPath = user.role === 'Admin' ? '/admin/dashboard' : '/';
         return <Navigate to={redirectPath} replace />;
     }
-    console.log('ProtectedRoute Check:', { user, token, allowedRoles });
     // Render children if passed, otherwise Outlet for nested routes
     return children ? <>{children}</> : <Outlet />;
 }
