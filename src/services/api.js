@@ -1,9 +1,10 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
-//production
-//const API_URL = 'http://4.224.104.124:5000/api';
-//local
-const API_URL = 'http://localhost:5001/api';
+
+// Automatically detect environment to avoid hardcoding IP addresses
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5001/api' // local
+    : '/api';                     // production (proxied by Nginx)
 
 const api = axios.create({
     baseURL: API_URL,
