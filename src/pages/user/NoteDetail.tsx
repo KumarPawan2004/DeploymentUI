@@ -527,18 +527,20 @@ export default function NoteDetail() {
                                 <p className="nd-stat-label" style={{ marginBottom: '20px' }}>You have full access to this note.</p>
                                 
                                 <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', maxWidth: '400px', margin: '0 auto' }}>
-                                    <button 
-                                        className="nd-btn nd-btn-primary flex-1" 
-                                        onClick={() => navigate(`/browse/note/${id}/view`)}
-                                    >
-                                        <FileText size={18} />
-                                        Read Securely
-                                    </button>
+                                    {!isFree && (
+                                        <button 
+                                            className="nd-btn nd-btn-primary flex-1" 
+                                            onClick={() => navigate(`/browse/note/${id}/view`)}
+                                        >
+                                            <FileText size={18} />
+                                            Read Securely
+                                        </button>
+                                    )}
                                     
-                                    {user?.role === 'Admin' && (
+                                    {(isFree || user?.role === 'Admin') && (
                                         <button className="nd-btn nd-btn-success flex-1" onClick={handleDownload}>
                                             <Download size={18} />
-                                            Download (Admin)
+                                            {isFree ? 'Download Free Note' : 'Download (Admin)'}
                                         </button>
                                     )}
                                 </div>
@@ -554,18 +556,10 @@ export default function NoteDetail() {
 
                                 <div style={{ display: 'flex', gap: '16px', flexDirection: 'column' }}>
                                     {isFree ? (
-                                        <>
-                                            <button className="nd-btn nd-btn-primary" onClick={() => navigate(`/browse/note/${id}/view`)}>
-                                                <FileText size={18} />
-                                                Read Securely
-                                            </button>
-                                            {user?.role === 'Admin' && (
-                                                <button className="nd-btn nd-btn-success" onClick={handleDownload}>
-                                                    <Download size={18} />
-                                                    Download (Admin)
-                                                </button>
-                                            )}
-                                        </>
+                                        <button className="nd-btn nd-btn-success" onClick={handleDownload}>
+                                            <Download size={18} />
+                                            Download Free Note
+                                        </button>
                                     ) : (
                                         <button className="nd-btn nd-btn-primary" onClick={handlePurchase}>
                                             <ShoppingCart size={18} />
