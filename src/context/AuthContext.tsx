@@ -94,9 +94,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 response.data as Record<string, unknown>
             );
 
-            console.log('Login Successful - User:', userData);
-            console.log('Role:', userData?.role);
-
             // Only store if data is valid (always camelCase for the rest of the app)
             if (newToken && newToken !== 'undefined') {
                 sessionStorage.setItem('token', newToken);

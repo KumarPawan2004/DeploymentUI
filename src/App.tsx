@@ -12,6 +12,7 @@ import AdminLayout from './components/layout/AdminLayout';
 import UserDashboard from './pages/user/Dashboard';
 import BrowseNotes from './pages/user/BrowseNotes';
 import NoteDetail from './pages/user/NoteDetail';
+import SecurePDFViewer from './pages/user/SecurePDFViewer';
 import UploadNote from './pages/user/UploadNote';
 import MyPurchases from './pages/user/MyPurchases';
 import MyUploads from './pages/user/MyUploads';
@@ -59,6 +60,7 @@ function App() {
             <Route index element={<UserDashboard />} />
             <Route path="browse" element={<BrowseNotes />} />
             <Route path="browse/note/:id" element={<NoteDetail />} />
+            <Route path="browse/note/:id/view" element={<SecurePDFViewer />} />
             <Route path="upload" element={<UploadNote />} />
             <Route path="my-uploads" element={<MyUploads />} />
             <Route path="my-purchases" element={<MyPurchases />} />

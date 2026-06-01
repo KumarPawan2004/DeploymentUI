@@ -525,10 +525,23 @@ export default function NoteDetail() {
                                 <CheckCircle size={36} className="nd-unlocked-icon" />
                                 <h3 className="nd-section-title" style={{ marginBottom: '8px', justifyContent: 'center' }}>Note Unlocked!</h3>
                                 <p className="nd-stat-label" style={{ marginBottom: '20px' }}>You have full access to this note.</p>
-                                <button className="nd-btn nd-btn-success" onClick={handleDownload} style={{ maxWidth: '400px', margin: '0 auto' }}>
-                                    <Download size={18} />
-                                    Download PDF
-                                </button>
+                                
+                                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', maxWidth: '400px', margin: '0 auto' }}>
+                                    <button 
+                                        className="nd-btn nd-btn-primary flex-1" 
+                                        onClick={() => navigate(`/browse/note/${id}/view`)}
+                                    >
+                                        <FileText size={18} />
+                                        Read Securely
+                                    </button>
+                                    
+                                    {user?.role === 'Admin' && (
+                                        <button className="nd-btn nd-btn-success flex-1" onClick={handleDownload}>
+                                            <Download size={18} />
+                                            Download (Admin)
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         ) : (
                             <div style={{ maxWidth: '600px', margin: '0 auto', width: '100%' }}>
@@ -541,10 +554,18 @@ export default function NoteDetail() {
 
                                 <div style={{ display: 'flex', gap: '16px', flexDirection: 'column' }}>
                                     {isFree ? (
-                                        <button className="nd-btn nd-btn-success" onClick={handleDownload}>
-                                            <Download size={18} />
-                                            Download Free Note
-                                        </button>
+                                        <>
+                                            <button className="nd-btn nd-btn-primary" onClick={() => navigate(`/browse/note/${id}/view`)}>
+                                                <FileText size={18} />
+                                                Read Securely
+                                            </button>
+                                            {user?.role === 'Admin' && (
+                                                <button className="nd-btn nd-btn-success" onClick={handleDownload}>
+                                                    <Download size={18} />
+                                                    Download (Admin)
+                                                </button>
+                                            )}
+                                        </>
                                     ) : (
                                         <button className="nd-btn nd-btn-primary" onClick={handlePurchase}>
                                             <ShoppingCart size={18} />
