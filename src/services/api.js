@@ -8,17 +8,15 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
 
 const api = axios.create({
     baseURL: API_URL,
+    withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// Add token to requests if it exists
+// Tokens are now handled automatically via HttpOnly cookies by the browser,
+// so we no longer need to manually inject the Authorization header.
 api.interceptors.request.use((config) => {
-    const token = sessionStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
     return config;
 });
 

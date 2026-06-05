@@ -496,6 +496,7 @@ export default function Login() {
                         <div style={s.socialGrid}>
                             <button
                                 type="button"
+                                onClick={() => { window.location.href = 'http://localhost:5001/api/auth/login-google'; }}
                                 style={s.socialBtn}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
@@ -517,6 +518,7 @@ export default function Login() {
 
                             <button
                                 type="button"
+                                onClick={() => { window.location.href = 'http://localhost:5001/api/auth/login-github'; }}
                                 style={s.socialBtn}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
