@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, allowedRoles = [] }: ProtectedRouteProps) {
-    const { user, token, isLoading } = useAuth();
+    const { user, isLoading } = useAuth();
     const location = useLocation();
 
     if (isLoading) {
@@ -19,7 +19,7 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
         );
     }
 
-    if (!token || !user) {
+    if (!user) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
