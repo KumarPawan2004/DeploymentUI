@@ -19,11 +19,18 @@ export default function SecurePDFViewer() {
     const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
     const [isBlurred, setIsBlurred] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isPremium, setIsPremium] = useState(true);
 
     useEffect(() => {
         const fetchPdf = async () => {
             try {
                 setIsLoading(true);
+                
+                // Fetch note details to check if it's free
+                const noteRes = await api.get(`/notes/${id}`);
+                const premium = (noteRes.data.price || 0) > 0;
+                setIsPremium(premium);
+
                 const response = await api.get(`/notes/download/${id}`, {
                     responseType: 'blob'
                 });
@@ -51,6 +58,8 @@ export default function SecurePDFViewer() {
 
     // Anti-Piracy: Blur when window loses focus (Screen share protection) + Keyboard blocks
     useEffect(() => {
+        if (!isPremium) return;
+
         const handleBlur = () => setIsBlurred(true);
         const handleFocus = () => setIsBlurred(false);
 
@@ -64,7 +73,7 @@ export default function SecurePDFViewer() {
                 setIsBlurred(true);
                 // Try to clear clipboard as an extra deterrent
                 try { navigator.clipboard.writeText(''); } catch(err) {}
-                toast.error("Screenshots are disabled for security reasons.");
+                // toast.error is handled globally now
             }
         };
 
@@ -85,7 +94,7 @@ export default function SecurePDFViewer() {
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('keyup', handleKeyUp);
         };
-    }, []);
+    }, [isPremium]);
 
     const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
         setNumPages(numPages);
@@ -136,17 +145,19 @@ export default function SecurePDFViewer() {
             {/* Document Container */}
             <div className={`relative flex-1 w-full flex items-center justify-center overflow-auto pt-20 pb-24 transition-all duration-300 ${isBlurred ? 'blur-xl opacity-20' : 'opacity-100'}`}>
                 
-                {/* Dynamic User Watermark Overlay */}
-                <div 
-                    className="fixed inset-0 z-10 pointer-events-none flex flex-wrap opacity-[0.04] overflow-hidden rotate-[-25deg] scale-150"
-                    style={{ gap: '80px', justifyContent: 'center', alignContent: 'center' }}
-                >
-                    {Array.from({ length: 150 }).map((_, i) => (
-                        <div key={i} className="text-3xl font-bold text-white whitespace-nowrap">
-                            {user?.email} • {user?.fullName}
-                        </div>
-                    ))}
-                </div>
+                {/* Dynamic User Watermark Overlay (Only for premium) */}
+                {isPremium && (
+                    <div 
+                        className="fixed inset-0 z-10 pointer-events-none flex flex-wrap opacity-[0.04] overflow-hidden rotate-[-25deg] scale-150"
+                        style={{ gap: '80px', justifyContent: 'center', alignContent: 'center' }}
+                    >
+                        {Array.from({ length: 150 }).map((_, i) => (
+                            <div key={i} className="text-3xl font-bold text-white whitespace-nowrap">
+                                {user?.email} • {user?.fullName}
+                            </div>
+                        ))}
+                    </div>
+                )}
 
                 {pdfBlobUrl && (
                     <div className="bg-white rounded-lg shadow-2xl overflow-hidden relative z-0">

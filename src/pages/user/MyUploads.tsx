@@ -66,7 +66,7 @@ export default function MyUploads() {
       .uploads-container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 40px 24px;
+        padding: 16px 24px;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       }
 
@@ -82,16 +82,24 @@ export default function MyUploads() {
       .page-title {
         font-size: 36px;
         font-weight: 800;
-        background: linear-gradient(to right, #818cf8, #c084fc);
+        background: linear-gradient(to right, #6d28d9, #9333ea);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 8px;
         letter-spacing: -0.5px;
       }
+      .dark .page-title {
+        background: linear-gradient(to right, #818cf8, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
 
       .page-subtitle {
-        color: #94a3b8;
+        color: #475569;
         font-size: 16px;
+      }
+      .dark .page-subtitle {
+        color: #94a3b8;
       }
 
       .upload-btn {
@@ -116,24 +124,45 @@ export default function MyUploads() {
       .uploads-grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 24px;
+        gap: 16px;
+      }
+
+      @media (min-width: 768px) {
+        .uploads-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .uploads-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
       }
 
       .upload-card {
-        background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(99, 102, 241, 0.15);
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 20px;
         padding: 32px;
         display: flex;
         flex-direction: column;
         gap: 24px;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .dark .upload-card {
+        background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(99, 102, 241, 0.15);
         box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
       }
 
       .upload-card:hover {
         transform: translateY(-4px);
+        border-color: #818cf8;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+      .dark .upload-card:hover {
         border-color: rgba(99, 102, 241, 0.4);
         box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.2);
       }
@@ -150,20 +179,23 @@ export default function MyUploads() {
       }
 
       .note-title {
-        font-size: 22px;
+        font-size: 16px;
         font-weight: 700;
-        color: #f8fafc;
-        margin-bottom: 16px;
+        color: #0f172a;
+        margin-bottom: 12px;
         line-height: 1.3;
+      }
+      .dark .note-title {
+        color: #f8fafc;
       }
 
       .status-badge {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
+        gap: 4px;
+        padding: 4px 10px;
         border-radius: 20px;
-        font-size: 13px;
+        font-size: 11px;
         font-weight: 600;
         letter-spacing: 0.5px;
       }
@@ -189,18 +221,23 @@ export default function MyUploads() {
       .note-meta-grid {
         display: flex;
         flex-wrap: wrap;
-        gap: 16px;
+        gap: 12px;
       }
 
       .meta-item {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
+        background: #f8fafc;
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        font-size: 12px;
+        color: #334155;
+      }
+      .dark .meta-item {
         background: rgba(15, 23, 42, 0.5);
-        padding: 8px 16px;
-        border-radius: 10px;
         border: 1px solid rgba(255,255,255,0.05);
-        font-size: 14px;
         color: #cbd5e1;
       }
 
@@ -233,14 +270,18 @@ export default function MyUploads() {
       }
 
       .empty-state {
-        background: linear-gradient(145deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
-        border: 2px dashed rgba(99, 102, 241, 0.2);
+        background: #ffffff;
+        border: 2px dashed #cbd5e1;
         border-radius: 24px;
         padding: 80px 20px;
         text-align: center;
         display: flex;
         flex-direction: column;
         align-items: center;
+      }
+      .dark .empty-state {
+        background: linear-gradient(145deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+        border: 2px dashed rgba(99, 102, 241, 0.2);
       }
 
       .empty-icon-wrap {
@@ -259,15 +300,21 @@ export default function MyUploads() {
       .empty-title {
         font-size: 28px;
         font-weight: 700;
-        color: #f8fafc;
+        color: #0f172a;
         margin-bottom: 12px;
+      }
+      .dark .empty-title {
+        color: #f8fafc;
       }
 
       .empty-desc {
-        color: #94a3b8;
+        color: #64748b;
         font-size: 16px;
         margin-bottom: 32px;
         max-width: 400px;
+      }
+      .dark .empty-desc {
+        color: #94a3b8;
       }
     `;
 
@@ -275,14 +322,10 @@ export default function MyUploads() {
         <>
             <style>{styles}</style>
             <div className="uploads-container">
-                <div className="header-section">
-                    <div>
-                        <h1 className="page-title">My Uploads</h1>
-                        <p className="page-subtitle">Track the review status of the notes you've submitted.</p>
-                    </div>
-                    <Link to="/upload" className="upload-btn">
+                <div className="header-section" style={{ justifyContent: 'flex-end', marginBottom: '16px' }}>
+                    <Link to="/upload" className="upload-btn" style={{ padding: '8px 16px', borderRadius: '8px', fontSize: '12px' }}>
                         Upload New Note
-                        <ArrowRight size={18} />
+                        <ArrowRight size={16} />
                     </Link>
                 </div>
 

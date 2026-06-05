@@ -15,8 +15,7 @@ body {
   height: 100%;
   overflow-x: hidden;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: #0f172a; /* Slate 900 as base fallback */
-  color: #f8fafc; /* Slate 50 as base text */
+  @apply bg-slate-50 dark:bg-[#0f172a] text-slate-900 dark:text-[#f8fafc];
   
   /* Global UI Protection */
   user-select: none; /* Prevent text selection */

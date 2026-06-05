@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { Bell, Moon, Sun, Monitor, Shield, Mail, Smartphone, Globe, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function Settings() {
+    const { theme, setTheme } = useTheme();
     const [isSaving, setIsSaving] = useState(false);
 
     const [settings, setSettings] = useState({
         emailNotifications: true,
         pushNotifications: false,
         marketingEmails: false,
-        theme: 'dark', // 'dark', 'light', 'system'
         profileVisibility: 'public', // 'public', 'private'
         twoFactorAuth: false
     });
@@ -28,6 +29,10 @@ export default function Settings() {
         }));
     };
 
+    const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
+        setTheme(newTheme);
+    };
+
     const handleSave = () => {
         setIsSaving(true);
         // Simulate API call
@@ -36,6 +41,8 @@ export default function Settings() {
             toast.success("Settings saved successfully!");
         }, 1000);
     };
+    
+
 
     const styles = `
       .settings-container {
@@ -57,16 +64,24 @@ export default function Settings() {
       .page-title {
         font-size: 36px;
         font-weight: 800;
-        background: linear-gradient(to right, #a78bfa, #c084fc);
+        background: linear-gradient(to right, #6d28d9, #9333ea);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 8px;
         letter-spacing: -0.5px;
       }
+      .dark .page-title {
+        background: linear-gradient(to right, #a78bfa, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
 
       .page-subtitle {
-        color: #94a3b8;
+        color: #64748b;
         font-size: 16px;
+      }
+      .dark .page-subtitle {
+        color: #94a3b8;
       }
 
       .btn-save {
@@ -95,12 +110,17 @@ export default function Settings() {
       }
 
       .settings-section {
-        background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(148, 163, 184, 0.1);
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 24px;
         padding: 32px;
         margin-bottom: 32px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .dark .settings-section {
+        background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(148, 163, 184, 0.1);
         box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
       }
 
@@ -110,6 +130,9 @@ export default function Settings() {
         gap: 12px;
         margin-bottom: 24px;
         padding-bottom: 16px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .dark .section-header {
         border-bottom: 1px solid rgba(255,255,255,0.05);
       }
 
@@ -126,6 +149,9 @@ export default function Settings() {
       .section-title {
         font-size: 20px;
         font-weight: 700;
+        color: #0f172a;
+      }
+      .dark .section-title {
         color: #f8fafc;
       }
 
@@ -134,6 +160,9 @@ export default function Settings() {
         justify-content: space-between;
         align-items: center;
         padding: 20px 0;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .dark .setting-item {
         border-bottom: 1px solid rgba(255,255,255,0.03);
       }
 
@@ -157,8 +186,11 @@ export default function Settings() {
       .setting-text h4 {
         font-size: 16px;
         font-weight: 600;
-        color: #e2e8f0;
+        color: #334155;
         margin-bottom: 4px;
+      }
+      .dark .setting-text h4 {
+        color: #e2e8f0;
       }
 
       .setting-text p {
@@ -172,11 +204,15 @@ export default function Settings() {
         position: relative;
         width: 52px;
         height: 28px;
-        background-color: rgba(30, 41, 59, 0.8);
-        border: 1px solid rgba(148, 163, 184, 0.2);
+        background-color: #e2e8f0;
+        border: 1px solid #cbd5e1;
         border-radius: 34px;
         cursor: pointer;
         transition: background-color 0.3s ease;
+      }
+      .dark .toggle-switch {
+        background-color: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(148, 163, 184, 0.2);
       }
 
       .toggle-switch.active {
@@ -205,9 +241,13 @@ export default function Settings() {
       .radio-group {
         display: flex;
         gap: 12px;
-        background: rgba(15, 23, 42, 0.6);
+        background: #f1f5f9;
         padding: 6px;
         border-radius: 12px;
+        border: 1px solid #e2e8f0;
+      }
+      .dark .radio-group {
+        background: rgba(15, 23, 42, 0.6);
         border: 1px solid rgba(148, 163, 184, 0.1);
       }
 
@@ -216,15 +256,22 @@ export default function Settings() {
         border-radius: 8px;
         font-size: 14px;
         font-weight: 500;
-        color: #94a3b8;
+        color: #64748b;
         cursor: pointer;
         transition: all 0.2s ease;
         display: flex;
         align-items: center;
         gap: 8px;
       }
+      .dark .radio-option {
+        color: #94a3b8;
+      }
 
       .radio-option:hover {
+        color: #0f172a;
+        background: rgba(0,0,0,0.05);
+      }
+      .dark .radio-option:hover {
         color: #e2e8f0;
         background: rgba(255,255,255,0.05);
       }
@@ -236,17 +283,25 @@ export default function Settings() {
       }
 
       .select-control {
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(71, 85, 105, 0.4);
-        color: #f8fafc;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #0f172a;
         padding: 10px 16px;
         border-radius: 10px;
         font-size: 14px;
         outline: none;
         cursor: pointer;
       }
+      .dark .select-control {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(71, 85, 105, 0.4);
+        color: #f8fafc;
+      }
 
       .select-control option {
+        background: #ffffff;
+      }
+      .dark .select-control option {
         background: #0f172a;
       }
     `;
@@ -327,20 +382,20 @@ export default function Settings() {
                         </div>
                         <div className="radio-group">
                             <div 
-                                className={`radio-option ${settings.theme === 'light' ? 'active' : ''}`}
-                                onClick={() => handleChange('theme', 'light')}
+                                className={`radio-option ${theme === 'light' ? 'active' : ''}`}
+                                onClick={() => handleThemeChange('light')}
                             >
                                 <Sun size={16} /> Light
                             </div>
                             <div 
-                                className={`radio-option ${settings.theme === 'dark' ? 'active' : ''}`}
-                                onClick={() => handleChange('theme', 'dark')}
+                                className={`radio-option ${theme === 'dark' ? 'active' : ''}`}
+                                onClick={() => handleThemeChange('dark')}
                             >
                                 <Moon size={16} /> Dark
                             </div>
                             <div 
-                                className={`radio-option ${settings.theme === 'system' ? 'active' : ''}`}
-                                onClick={() => handleChange('theme', 'system')}
+                                className={`radio-option ${theme === 'system' ? 'active' : ''}`}
+                                onClick={() => handleThemeChange('system')}
                             >
                                 <Monitor size={16} /> System
                             </div>

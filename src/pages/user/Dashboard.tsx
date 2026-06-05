@@ -66,21 +66,26 @@ export default function UserDashboard() {
   .dashboard-header h1 {
     font-size: 36px;
     font-weight: 700;
+    color: #0f172a;
+  }
+  .dark .dashboard-header h1 {
     color: #ffffff;
   }
 
   .dashboard-header p {
-    color: #94a3b8;
+    color: #475569;
     margin-top: 8px;
     font-size: 16px;
   }
+  .dark .dashboard-header p {
+    color: #94a3b8;
+  }
 
-  /* Stats Grid */
   .dash-stats-grid {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
-    gap: 24px;
-    margin-bottom: 40px;
+    gap: 16px;
+    margin-bottom: 24px;
   }
 
   @media (min-width: 768px) {
@@ -96,17 +101,22 @@ export default function UserDashboard() {
   }
 
   .dash-stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+  .dark .dash-stat-card {
     background: rgba(15, 23, 42, 0.8);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(30, 41, 59, 1);
-    border-radius: 16px;
-    padding: 24px;
-    text-align: center;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   }
 
   .dash-stat-value {
-    font-size: 36px;
+    font-size: 28px;
     font-weight: 700;
   }
 
@@ -125,7 +135,7 @@ export default function UserDashboard() {
   .main-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 20px;
   }
 
   @media (min-width: 1024px) {
@@ -143,36 +153,44 @@ export default function UserDashboard() {
   }
 
   .dashboard-card {
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(30, 41, 59, 1);
-    border-radius: 16px;
-    padding: 32px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     height: 100%;
     display: flex;
     flex-direction: column;
   }
+  .dark .dashboard-card {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(30, 41, 59, 1);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  }
 
   .card-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 16px;
+  }
+  .dark .card-title {
     color: #ffffff;
-    margin-bottom: 24px;
   }
 
   /* Buttons */
   .action-btn {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
-    padding: 14px 20px;
-    border-radius: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
     font-weight: 500;
     text-decoration: none;
     transition: all 0.3s ease;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
 
   .action-btn:last-child {
@@ -191,12 +209,20 @@ export default function UserDashboard() {
   }
 
   .btn-secondary {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+  }
+  .dark .btn-secondary {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #ffffff;
   }
 
   .btn-secondary:hover {
+    background: #e2e8f0;
+  }
+  .dark .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.1);
   }
 
@@ -209,28 +235,38 @@ export default function UserDashboard() {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
 
   .note-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px;
+    padding: 14px 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+  .dark .note-item {
     background: rgba(30, 41, 59, 0.4);
     border: 1px solid rgba(51, 65, 85, 0.5);
-    border-radius: 12px;
-    transition: all 0.3s ease;
   }
 
   .note-item:hover {
+    background: #f1f5f9;
+  }
+  .dark .note-item:hover {
     background: rgba(30, 41, 59, 0.8);
   }
 
   .note-title {
     font-weight: 600;
-    color: #ffffff;
+    color: #0f172a;
     font-size: 16px;
+  }
+  .dark .note-title {
+    color: #ffffff;
   }
 
   .note-meta {
@@ -268,9 +304,9 @@ export default function UserDashboard() {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
     padding: 10px 24px;
     border-radius: 9999px;
     font-weight: 500;
@@ -278,8 +314,16 @@ export default function UserDashboard() {
     text-decoration: none;
     transition: all 0.3s ease;
   }
+  .dark .btn-outline {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
 
   .btn-outline:hover {
+    background: #f1f5f9;
+  }
+  .dark .btn-outline:hover {
     background: rgba(255, 255, 255, 0.1);
   }
 
@@ -390,12 +434,6 @@ export default function UserDashboard() {
       <style>{styles}</style>
       <div className="dashboard-container">
         
-        {/* Welcome Banner */}
-        <div className="dashboard-header">
-          <h1>Welcome back, {user?.fullName || 'Academic Student'} 👋</h1>
-          <p>Access your study workspace, track pending reviews, and explore curated knowledge packs.</p>
-        </div>
-
         {/* Stats Cards */}
         <div className="dash-stats-grid">
           <div className="dash-stat-card">

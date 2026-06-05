@@ -85,7 +85,7 @@ export default function MyPurchases() {
       .purchases-container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 40px 24px;
+        padding: 16px 24px;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       }
 
@@ -101,26 +101,35 @@ export default function MyPurchases() {
       .page-title {
         font-size: 36px;
         font-weight: 800;
-        background: linear-gradient(to right, #818cf8, #c084fc);
+        background: linear-gradient(to right, #6d28d9, #9333ea);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 8px;
         letter-spacing: -0.5px;
       }
+      .dark .page-title {
+        background: linear-gradient(to right, #818cf8, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
 
       .page-subtitle {
-        color: #94a3b8;
+        color: #475569;
         font-size: 16px;
+      }
+      .dark .page-subtitle {
+        color: #94a3b8;
       }
 
       .browse-btn {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
         color: white;
-        padding: 12px 24px;
-        border-radius: 12px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
         font-weight: 600;
         text-decoration: none;
         transition: all 0.3s ease;
@@ -135,24 +144,33 @@ export default function MyPurchases() {
       .purchases-grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 24px;
+        gap: 16px;
       }
 
       .purchase-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .dark .purchase-card {
         background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(99, 102, 241, 0.15);
-        border-radius: 20px;
-        padding: 32px;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-        transition: all 0.3s ease;
         box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
       }
 
       .purchase-card:hover {
         transform: translateY(-4px);
+        border-color: #818cf8;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+      .dark .purchase-card:hover {
         border-color: rgba(99, 102, 241, 0.4);
         box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.2);
       }
@@ -170,28 +188,36 @@ export default function MyPurchases() {
       }
 
       .note-title {
-        font-size: 22px;
+        font-size: 16px;
         font-weight: 700;
-        color: #f8fafc;
-        margin-bottom: 16px;
+        color: #0f172a;
+        margin-bottom: 12px;
         line-height: 1.3;
+      }
+      .dark .note-title {
+        color: #f8fafc;
       }
 
       .note-meta-grid {
         display: flex;
         flex-wrap: wrap;
-        gap: 16px;
+        gap: 8px;
       }
 
       .meta-item {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 4px;
+        background: #f8fafc;
+        padding: 4px 8px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        font-size: 11px;
+        color: #334155;
+      }
+      .dark .meta-item {
         background: rgba(15, 23, 42, 0.5);
-        padding: 8px 16px;
-        border-radius: 10px;
         border: 1px solid rgba(255,255,255,0.05);
-        font-size: 14px;
         color: #cbd5e1;
       }
 
@@ -205,36 +231,22 @@ export default function MyPurchases() {
 
       .card-actions {
         display: flex;
-        flex-direction: column;
-        gap: 12px;
-        min-width: 200px;
-      }
-
-      @media (min-width: 640px) {
-        .card-actions {
-          flex-direction: row;
-        }
-      }
-      
-      @media (min-width: 1024px) {
-        .card-actions {
-          flex-direction: column;
-        }
+        flex-direction: row;
+        gap: 8px;
       }
 
       .action-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        padding: 14px 20px;
-        border-radius: 12px;
+        gap: 4px;
+        padding: 6px 12px;
+        border-radius: 6px;
         font-weight: 600;
-        font-size: 14px;
+        font-size: 12px;
         cursor: pointer;
-        transition: all 0.2s ease;
         border: none;
-        width: 100%;
+        white-space: nowrap;
       }
 
       .btn-download {
@@ -249,60 +261,79 @@ export default function MyPurchases() {
       }
 
       .btn-view {
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+      }
+      .dark .btn-view {
         background: rgba(30, 41, 59, 0.8);
         color: #e2e8f0;
         border: 1px solid rgba(148, 163, 184, 0.3);
       }
 
       .btn-view:hover {
+        background: #e2e8f0;
+        border-color: #94a3b8;
+        transform: translateY(-2px);
+      }
+      .dark .btn-view:hover {
         background: rgba(51, 65, 85, 0.8);
         border-color: rgba(148, 163, 184, 0.5);
-        transform: translateY(-2px);
       }
 
       .download-count {
-        font-size: 13px;
+        font-size: 11px;
         color: #64748b;
         text-align: right;
-        margin-top: 8px;
+        margin-top: 4px;
       }
 
       .empty-state {
-        background: linear-gradient(145deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
-        border: 2px dashed rgba(99, 102, 241, 0.2);
-        border-radius: 24px;
-        padding: 80px 20px;
+        background: #ffffff;
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 40px 20px;
         text-align: center;
         display: flex;
         flex-direction: column;
         align-items: center;
       }
+      .dark .empty-state {
+        background: linear-gradient(145deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+        border: 2px dashed rgba(99, 102, 241, 0.2);
+      }
 
       .empty-icon-wrap {
-        width: 96px;
-        height: 96px;
+        width: 72px;
+        height: 72px;
         background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: #818cf8;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
         box-shadow: 0 0 30px rgba(99,102,241,0.1);
       }
 
       .empty-title {
-        font-size: 28px;
+        font-size: 20px;
         font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+      }
+      .dark .empty-title {
         color: #f8fafc;
-        margin-bottom: 12px;
       }
 
       .empty-desc {
-        color: #94a3b8;
-        font-size: 16px;
-        margin-bottom: 32px;
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 24px;
         max-width: 400px;
+      }
+      .dark .empty-desc {
+        color: #94a3b8;
       }
     `;
 
@@ -329,14 +360,10 @@ export default function MyPurchases() {
         <>
             <style>{styles}</style>
             <div className="purchases-container">
-                <div className="header-section">
-                    <div>
-                        <h1 className="page-title">My Learning Library</h1>
-                        <p className="page-subtitle">Access all your purchased notes anytime, anywhere.</p>
-                    </div>
+                <div className="header-section" style={{ justifyContent: 'flex-end', marginBottom: '16px' }}>
                     <Link to="/browse" className="browse-btn">
                         Browse More Notes
-                        <ArrowRight size={18} />
+                        <ArrowRight size={16} />
                     </Link>
                 </div>
 

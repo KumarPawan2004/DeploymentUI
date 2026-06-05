@@ -167,23 +167,33 @@ export default function NoteDetail() {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        color: #64748b;
+        color: #475569;
         text-decoration: none;
         font-weight: 600;
         font-size: 14px;
         transition: all 0.3s ease;
         padding: 6px 12px;
         border-radius: 8px;
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        justify-self: start;
+      }
+      .dark .nd-back-link {
+        color: #64748b;
         background: rgba(255, 255, 255, 0.02);
         border: 1px solid rgba(255, 255, 255, 0.05);
-        justify-self: start;
       }
 
       .nd-back-link:hover {
+        color: #0f172a;
+        background: #e2e8f0;
+        border-color: #94a3b8;
+        transform: translateX(-3px);
+      }
+      .dark .nd-back-link:hover {
         color: #f8fafc;
         background: rgba(255, 255, 255, 0.05);
         border-color: rgba(255, 255, 255, 0.1);
-        transform: translateX(-3px);
       }
 
       .nd-detail-grid {
@@ -195,11 +205,16 @@ export default function NoteDetail() {
       }
 
       .nd-glass-panel {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 20px 24px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .dark .nd-glass-panel {
         background: linear-gradient(145deg, rgba(30, 41, 59, 0.35) 0%, rgba(15, 23, 42, 0.55) 100%);
         backdrop-filter: blur(24px);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 20px;
-        padding: 20px 24px;
         box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
       }
       
@@ -210,10 +225,13 @@ export default function NoteDetail() {
       .nd-note-title {
         font-size: 24px;
         font-weight: 800;
-        color: #f8fafc;
+        color: #0f172a;
         line-height: 1.35;
         margin-top: 8px;
         margin-bottom: 16px;
+      }
+      .dark .nd-note-title {
+        color: #f8fafc;
         background: linear-gradient(135deg, #ffffff 40%, #e0e7ff 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -228,17 +246,23 @@ export default function NoteDetail() {
       }
 
       .nd-author-info {
-        color: #94a3b8;
+        color: #475569;
         font-size: 13px;
         font-weight: 500;
         display: flex;
         align-items: center;
         gap: 6px;
       }
+      .dark .nd-author-info {
+        color: #94a3b8;
+      }
 
       .nd-author-info strong {
-        color: #cbd5e1;
+        color: #0f172a;
         font-weight: 600;
+      }
+      .dark .nd-author-info strong {
+        color: #cbd5e1;
       }
 
       .nd-badge-subject {
@@ -263,8 +287,8 @@ export default function NoteDetail() {
       }
 
       .nd-stat-item {
-        background: rgba(15, 23, 42, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.04);
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
         border-radius: 12px;
         padding: 6px 14px;
         display: flex;
@@ -272,11 +296,19 @@ export default function NoteDetail() {
         gap: 8px;
         transition: all 0.3s;
       }
+      .dark .nd-stat-item {
+        background: rgba(15, 23, 42, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+      }
 
       .nd-stat-item:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+        transform: translateY(-1px);
+      }
+      .dark .nd-stat-item:hover {
         background: rgba(15, 23, 42, 0.55);
         border-color: rgba(99, 102, 241, 0.15);
-        transform: translateY(-1px);
       }
 
       .nd-stat-icon {
@@ -293,35 +325,47 @@ export default function NoteDetail() {
       .nd-stat-value {
         font-size: 13px;
         font-weight: 700;
-        color: #f8fafc;
+        color: #0f172a;
         line-height: 1.2;
+      }
+      .dark .nd-stat-value {
+        color: #f8fafc;
       }
 
       .nd-stat-label {
         font-size: 10px;
-        color: #64748b;
+        color: #475569;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+      }
+      .dark .nd-stat-label {
+        color: #64748b;
       }
 
       .nd-section-title {
         font-size: 16px;
         font-weight: 800;
-        color: #f8fafc;
+        color: #0f172a;
         margin-bottom: 10px;
         letter-spacing: -0.2px;
         display: flex;
         align-items: center;
         gap: 8px;
       }
+      .dark .nd-section-title {
+        color: #f8fafc;
+      }
 
       .nd-description-text {
-        color: #cbd5e1;
+        color: #334155;
         line-height: 1.6;
         font-size: 14px;
         font-weight: 400;
         white-space: pre-line;
+      }
+      .dark .nd-description-text {
+        color: #cbd5e1;
       }
 
       /* Stacked Panel */
@@ -333,8 +377,8 @@ export default function NoteDetail() {
       }
 
       .nd-price-display {
-        background: rgba(15, 23, 42, 0.4);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
         border-radius: 14px;
         padding: 12px 20px;
         text-align: center;
@@ -342,13 +386,20 @@ export default function NoteDetail() {
         position: relative;
         overflow: hidden;
       }
+      .dark .nd-price-display {
+        background: rgba(15, 23, 42, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
 
       .nd-price-amount {
         font-size: 26px;
         font-weight: 800;
-        color: #f8fafc;
+        color: #0f172a;
         margin-bottom: 2px;
         letter-spacing: -0.5px;
+      }
+      .dark .nd-price-amount {
+        color: #f8fafc;
       }
       
       .nd-price-free {
@@ -359,11 +410,14 @@ export default function NoteDetail() {
       }
 
       .nd-price-label {
-        color: #64748b;
+        color: #475569;
         font-size: 12px;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+      }
+      .dark .nd-price-label {
+        color: #64748b;
       }
 
       .nd-btn {
@@ -407,15 +461,24 @@ export default function NoteDetail() {
       }
 
       .nd-btn-outline {
+        background: #ffffff;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+      }
+      .dark .nd-btn-outline {
         background: rgba(15, 23, 42, 0.4);
         color: #f8fafc;
         border: 1px solid rgba(148, 163, 184, 0.2);
       }
 
       .nd-btn-outline:hover {
+        background: #f1f5f9;
+        border-color: #94a3b8;
+        transform: translateY(-1px);
+      }
+      .dark .nd-btn-outline:hover {
         background: rgba(255,255,255,0.05);
         border-color: rgba(148, 163, 184, 0.4);
-        transform: translateY(-1px);
       }
 
       .nd-btn-outline.active {
@@ -433,20 +496,26 @@ export default function NoteDetail() {
       .nd-features-title {
         font-size: 11px;
         font-weight: 700;
-        color: #64748b;
+        color: #475569;
         margin-bottom: 10px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+      }
+      .dark .nd-features-title {
+        color: #64748b;
       }
 
       .nd-feature-item {
         display: flex;
         align-items: center;
         gap: 8px;
-        color: #94a3b8;
+        color: #334155;
         font-size: 12px;
         margin-bottom: 8px;
         font-weight: 500;
+      }
+      .dark .nd-feature-item {
+        color: #94a3b8;
       }
 
       .nd-feature-icon {
@@ -527,15 +596,13 @@ export default function NoteDetail() {
                                 <p className="nd-stat-label" style={{ marginBottom: '20px' }}>You have full access to this note.</p>
                                 
                                 <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', maxWidth: '400px', margin: '0 auto' }}>
-                                    {!isFree && (
-                                        <button 
-                                            className="nd-btn nd-btn-primary flex-1" 
-                                            onClick={() => navigate(`/browse/note/${id}/view`)}
-                                        >
-                                            <FileText size={18} />
-                                            Read Securely
-                                        </button>
-                                    )}
+                                    <button 
+                                        className="nd-btn nd-btn-primary flex-1" 
+                                        onClick={() => navigate(`/browse/note/${id}/view`)}
+                                    >
+                                        <FileText size={18} />
+                                        {isFree ? 'Read Free Note' : 'Read Securely'}
+                                    </button>
                                     
                                     {(isFree || user?.role === 'Admin') && (
                                         <button className="nd-btn nd-btn-success flex-1" onClick={handleDownload}>
@@ -556,10 +623,16 @@ export default function NoteDetail() {
 
                                 <div style={{ display: 'flex', gap: '16px', flexDirection: 'column' }}>
                                     {isFree ? (
-                                        <button className="nd-btn nd-btn-success" onClick={handleDownload}>
-                                            <Download size={18} />
-                                            Download Free Note
-                                        </button>
+                                        <div style={{ display: 'flex', gap: '12px' }}>
+                                            <button className="nd-btn nd-btn-primary flex-1" onClick={() => navigate(`/browse/note/${id}/view`)}>
+                                                <FileText size={18} />
+                                                View Note
+                                            </button>
+                                            <button className="nd-btn nd-btn-success flex-1" onClick={handleDownload}>
+                                                <Download size={18} />
+                                                Download
+                                            </button>
+                                        </div>
                                     ) : (
                                         <button className="nd-btn nd-btn-primary" onClick={handlePurchase}>
                                             <ShoppingCart size={18} />

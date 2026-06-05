@@ -56,26 +56,37 @@ const styles = `
     box-sizing: border-box;
   }
 
+  /* LIGHT MODE (Default) */
   .noteshub-container {
     display: flex;
     height: 100vh;
-    background: linear-gradient(135deg, #0f172a 0%, #111827 50%, #020617 100%);
-    color: #ffffff;
+    background: #f1f5f9;
+    color: #0f172a;
     overflow: hidden;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   }
 
-  /* ============ SIDEBAR ============ */
   .noteshub-sidebar {
-    width: 270px;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(17, 24, 39, 0.6) 50%, rgba(2, 6, 23, 0.8) 100%);
-    backdrop-filter: blur(40px);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    width: 240px;
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
     transition: all 0.3s ease;
+  }
+
+  /* DARK MODE OVERRIDES */
+  .dark .noteshub-container {
+    background: linear-gradient(135deg, #0f172a 0%, #111827 50%, #020617 100%);
+    color: #ffffff;
+  }
+
+  .dark .noteshub-sidebar {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(17, 24, 39, 0.6) 50%, rgba(2, 6, 23, 0.8) 100%);
+    backdrop-filter: blur(40px);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .noteshub-sidebar::before {
@@ -106,24 +117,32 @@ const styles = `
 
   /* Logo */
   .sidebar-logo {
-    padding: 0 0 1rem 2rem;
+    padding: 0 0 12px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     position: relative;
     z-index: 10;
   }
 
   .sidebar-logo h1 {
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 900;
     letter-spacing: -1px;
-    background: linear-gradient(90deg, #a78bfa 0%, #818cf8 50%, #60a5fa 100%);
+    background: linear-gradient(90deg, #6d28d9 0%, #4f46e5 50%, #2563eb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     display: inline;
   }
+  .dark .sidebar-logo h1 {
+    background: linear-gradient(90deg, #a78bfa 0%, #818cf8 50%, #60a5fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 
   .sidebar-logo h1 span {
+    color: #0f172a;
+  }
+  .dark .sidebar-logo h1 span {
     color: #ffffff;
   }
 
@@ -162,19 +181,26 @@ const styles = `
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 10px 18px;
+    padding: 8px 14px;
     border-radius: 12px;
     text-decoration: none;
     font-size: 12px;
     font-weight: 500;
     transition: all 0.3s ease;
-    color: #cbd5e1;
+    color: #475569;
     border: 1px solid transparent;
     position: relative;
     overflow: hidden;
   }
+  .dark .nav-link {
+    color: #cbd5e1;
+  }
 
   .nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #0f172a;
+  }
+  .dark .nav-link:hover {
     background-color: rgba(255, 255, 255, 0.05);
     color: #ffffff;
   }
@@ -187,8 +213,8 @@ const styles = `
   }
 
   .nav-link-icon {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -223,7 +249,7 @@ const styles = `
 
   /* Quick Stats */
   .sidebar-stats {
-    padding: 20px;
+    padding: 16px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     position: relative;
     z-index: 10;
@@ -246,11 +272,15 @@ const styles = `
   }
 
   .stat-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 6px;
     transition: all 0.3s ease;
+  }
+  .dark .stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
   }
 
@@ -267,7 +297,7 @@ const styles = `
   }
 
   .stat-value {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     margin-top: 8px;
     text-align: center;
@@ -310,8 +340,8 @@ const styles = `
   }
 
   .user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 34px;
+    height: 34px;
     flex-shrink: 0;
     border-radius: 12px;
     background: linear-gradient(135deg, #8b5cf6 0%, #4f46e5 100%);
@@ -381,25 +411,43 @@ const styles = `
 
   /* Navbar */
   .noteshub-navbar {
-    height: 60px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    background: linear-gradient(90deg, rgba(15, 23, 42, 0.5) 0%, rgba(17, 24, 39, 0.3) 50%, rgba(15, 23, 42, 0.5) 100%);
+    height: 54px;
+    border-bottom: 1px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(40px);
-    padding: 0 32px;
+    padding: 0 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
   }
+  .dark .noteshub-navbar {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: linear-gradient(90deg, rgba(15, 23, 42, 0.5) 0%, rgba(17, 24, 39, 0.3) 50%, rgba(15, 23, 42, 0.5) 100%);
+  }
 
   .navbar-left h2 {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: -0.5px;
-    background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+    background: linear-gradient(90deg, #0f172a 0%, #334155 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .emoji-reset {
+    -webkit-text-fill-color: initial;
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+  }
+  .dark .navbar-left h2 {
+    background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .navbar-left p {
@@ -447,15 +495,20 @@ const styles = `
 
   .search-input {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 10px 11px 10px 36px;
     font-size: 9px;
-    color: #ffffff;
+    color: #0f172a;
     outline: none;
     transition: all 0.3s ease;
     font-family: inherit;
+  }
+  .dark .search-input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
   }
 
   .search-input::placeholder {
@@ -463,31 +516,48 @@ const styles = `
   }
 
   .search-input:hover {
+    border-color: #cbd5e1;
+  }
+  .dark .search-input:hover {
     border-color: rgba(255, 255, 255, 0.2);
   }
 
   .search-wrapper.focused .search-input {
+    background: #ffffff;
+    border-color: #818cf8;
+    box-shadow: 0 4px 12px rgba(129, 140, 248, 0.15);
+  }
+  .dark .search-wrapper.focused .search-input {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(129, 140, 248, 0.5);
     box-shadow: 0 8px 24px rgba(129, 140, 248, 0.1);
   }
 
-  /* Icon Buttons */
   .icon-btn {
     position: relative;
-    padding: 8px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 6px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #64748b;
+  }
+  .dark .icon-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: #94a3b8;
   }
 
   .icon-btn:hover {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #818cf8;
+  }
+  .dark .icon-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.2);
     color: #818cf8;
@@ -510,6 +580,9 @@ const styles = `
     align-items: center;
     gap: 12px;
     padding-left: 16px;
+    border-left: 1px solid #e2e8f0;
+  }
+  .dark .navbar-profile {
     border-left: 1px solid rgba(255, 255, 255, 0.1);
   }
 
@@ -527,6 +600,9 @@ const styles = `
   .profile-info-name {
     font-size: 12px;
     font-weight: 500;
+    color: #0f172a;
+  }
+  .dark .profile-info-name {
     color: #ffffff;
   }
 
@@ -537,9 +613,9 @@ const styles = `
   }
 
   .profile-avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
     background: linear-gradient(135deg, #8b5cf6 0%, #4f46e5 100%);
     display: flex;
     align-items: center;
@@ -555,11 +631,10 @@ const styles = `
     box-shadow: 0 8px 30px rgba(79, 70, 229, 0.5);
   }
 
-  /* Main Content Area */
   .noteshub-content {
     flex: 1;
     overflow: auto;
-    padding: 32px;
+    padding: 20px 24px 24px 24px;
   }
 
   /* Scrollbar Styling */
@@ -725,27 +800,13 @@ export default function UserLayout() {
           <header className="noteshub-navbar">
             {/* LEFT SECTION */}
             <div className="navbar-left">
-              <h2>Welcome back, {user?.fullName?.split(' ')[0] || 'User'} 👋</h2>
+              <h2>Welcome back, {user?.fullName?.split(' ')[0] || 'User'} <span className="emoji-reset">👋</span></h2>
               <p>Ready to continue learning today?</p>
             </div>
 
             {/* RIGHT SECTION */}
             <div className="navbar-right">
-              {/* SEARCH BAR */}
-              <div className={`search-wrapper ${searchFocused ? "focused" : ""}`}>
-                <div className="search-icon">
-                  <Search size={14} />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search notes, topics..."
-                  value={globalSearch}
-                  onChange={(e) => setGlobalSearch(e.target.value)}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                  className="search-input"
-                />
-              </div>
+
 
               {/* NOTIFICATION ICON */}
               <button className="icon-btn">

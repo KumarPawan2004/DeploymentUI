@@ -95,16 +95,24 @@ export default function Profile() {
       .page-title {
         font-size: 36px;
         font-weight: 800;
-        background: linear-gradient(to right, #60a5fa, #a78bfa);
+        background: linear-gradient(to right, #2563eb, #7c3aed);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 8px;
         letter-spacing: -0.5px;
       }
+      .dark .page-title {
+        background: linear-gradient(to right, #60a5fa, #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
 
       .page-subtitle {
-        color: #94a3b8;
+        color: #475569;
         font-size: 16px;
+      }
+      .dark .page-subtitle {
+        color: #94a3b8;
       }
 
       .profile-grid {
@@ -120,11 +128,16 @@ export default function Profile() {
       }
 
       .glass-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .dark .glass-card {
         background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(148, 163, 184, 0.1);
-        border-radius: 24px;
-        padding: 32px;
         box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
       }
 
@@ -134,8 +147,11 @@ export default function Profile() {
         align-items: center;
         text-align: center;
         padding-bottom: 32px;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid #e2e8f0;
         margin-bottom: 32px;
+      }
+      .dark .avatar-section {
+        border-bottom: 1px solid rgba(255,255,255,0.05);
       }
 
       .avatar-wrapper {
@@ -185,8 +201,11 @@ export default function Profile() {
       .user-name {
         font-size: 24px;
         font-weight: 700;
-        color: #f8fafc;
+        color: #0f172a;
         margin-bottom: 8px;
+      }
+      .dark .user-name {
+        color: #f8fafc;
       }
 
       .user-role {
@@ -210,18 +229,26 @@ export default function Profile() {
       }
 
       .stat-box {
-        background: rgba(15, 23, 42, 0.5);
-        border: 1px solid rgba(255,255,255,0.05);
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
         border-radius: 16px;
         padding: 20px;
         text-align: center;
         transition: all 0.3s ease;
       }
+      .dark .stat-box {
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(255,255,255,0.05);
+      }
 
       .stat-box:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+        transform: translateY(-2px);
+      }
+      .dark .stat-box:hover {
         background: rgba(30, 41, 59, 0.8);
         border-color: rgba(99, 102, 241, 0.3);
-        transform: translateY(-2px);
       }
 
       .stat-icon {
@@ -233,24 +260,33 @@ export default function Profile() {
       .stat-value {
         font-size: 28px;
         font-weight: 800;
-        color: #f8fafc;
+        color: #0f172a;
         margin-bottom: 4px;
+      }
+      .dark .stat-value {
+        color: #f8fafc;
       }
 
       .stat-label {
         font-size: 13px;
-        color: #94a3b8;
+        color: #475569;
         font-weight: 500;
+      }
+      .dark .stat-label {
+        color: #94a3b8;
       }
 
       .section-title {
         font-size: 20px;
         font-weight: 700;
-        color: #f8fafc;
+        color: #0f172a;
         margin-bottom: 24px;
         display: flex;
         align-items: center;
         gap: 12px;
+      }
+      .dark .section-title {
+        color: #f8fafc;
       }
       
       .section-icon {
@@ -268,8 +304,11 @@ export default function Profile() {
         display: block;
         font-size: 14px;
         font-weight: 500;
-        color: #cbd5e1;
+        color: #334155;
         margin-bottom: 8px;
+      }
+      .dark .form-label {
+        color: #cbd5e1;
       }
 
       .input-with-icon {
@@ -287,26 +326,40 @@ export default function Profile() {
       .form-control {
         width: 100%;
         padding: 14px 16px 14px 48px;
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(71, 85, 105, 0.4);
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
         border-radius: 12px;
-        color: #f8fafc;
+        color: #0f172a;
         font-size: 15px;
         outline: none;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+      }
+      .dark .form-control {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(71, 85, 105, 0.4);
+        color: #f8fafc;
         box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
       }
 
       .form-control:focus {
         border-color: #818cf8;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+      }
+      .dark .form-control:focus {
         background: rgba(15, 23, 42, 0.8);
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(0,0,0,0.1);
       }
 
       .form-control:disabled {
+        background: #f1f5f9;
+        color: #64748b;
+        cursor: not-allowed;
+      }
+      .dark .form-control:disabled {
         background: rgba(15, 23, 42, 0.4);
         color: #94a3b8;
-        cursor: not-allowed;
       }
 
       .btn-primary {
@@ -339,8 +392,11 @@ export default function Profile() {
 
       .divider {
         height: 1px;
-        background: rgba(255,255,255,0.05);
+        background: #e2e8f0;
         margin: 40px 0;
+      }
+      .dark .divider {
+        background: rgba(255,255,255,0.05);
       }
     `;
 

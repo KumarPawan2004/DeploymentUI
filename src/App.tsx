@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 
 import Login from './pages/auth/Login';
@@ -28,12 +29,15 @@ import ManageNotes from './pages/admin/ManageNotes';
 import ManageCategories from './pages/admin/ManageCategories';
 
 import ProtectedRoute from './components/ProtectedRoute';
+import GlobalProtection from './components/GlobalProtection';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Toaster position="top-right" />
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <GlobalProtection />
+          <Toaster position="top-right" />
 
         <Routes>
           {/* Public Routes */}
@@ -90,7 +94,8 @@ function App() {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

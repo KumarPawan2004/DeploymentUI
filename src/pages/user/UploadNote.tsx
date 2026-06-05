@@ -111,64 +111,79 @@ export default function UploadNote() {
       .upload-container {
         max-width: 900px;
         margin: 0 auto;
-        padding: 40px 24px;
+        padding: 16px 24px;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       }
 
       .upload-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .dark .upload-card {
         background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(99, 102, 241, 0.15);
-        border-radius: 24px;
-        padding: 40px;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
       }
 
       .upload-header {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 24px;
       }
 
       .upload-title {
-        font-size: 36px;
+        font-size: 28px;
         font-weight: 800;
         background: linear-gradient(to right, #818cf8, #c084fc);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
         letter-spacing: -0.5px;
       }
 
       .upload-subtitle {
-        color: #94a3b8;
-        font-size: 16px;
+        color: #475569;
+        font-size: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: 6px;
+      }
+      .dark .upload-subtitle {
+        color: #94a3b8;
       }
 
       .form-section {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        border: 1px solid #e2e8f0;
+      }
+      .dark .form-section {
         background: rgba(15, 23, 42, 0.4);
-        border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 24px;
         border: 1px solid rgba(255, 255, 255, 0.03);
       }
 
       .section-title {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
-        color: #f8fafc;
-        margin-bottom: 20px;
+        color: #0f172a;
+        margin-bottom: 16px;
         display: flex;
         align-items: center;
         gap: 8px;
       }
+      .dark .section-title {
+        color: #f8fafc;
+      }
 
       .form-group {
-        margin-bottom: 24px;
+        margin-bottom: 16px;
       }
 
       .form-group:last-child {
@@ -177,67 +192,97 @@ export default function UploadNote() {
 
       .form-label {
         display: block;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 500;
-        color: #cbd5e1;
-        margin-bottom: 8px;
+        color: #334155;
+        margin-bottom: 6px;
         letter-spacing: 0.3px;
+      }
+      .dark .form-label {
+        color: #cbd5e1;
       }
 
       .form-control {
         width: 100%;
-        padding: 14px 16px;
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(71, 85, 105, 0.4);
-        border-radius: 12px;
-        color: #f8fafc;
-        font-size: 15px;
+        padding: 10px 14px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        color: #0f172a;
+        font-size: 13px;
         outline: none;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+      }
+      .dark .form-control {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(71, 85, 105, 0.4);
+        color: #f8fafc;
         box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
       }
 
       .form-control:focus {
         border-color: #818cf8;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+      }
+      .dark .form-control:focus {
         background: rgba(15, 23, 42, 0.8);
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(0,0,0,0.1);
       }
 
       .form-control::placeholder {
+        color: #64748b;
+      }
+      .dark .form-control::placeholder {
         color: #475569;
       }
       
       .form-control option {
+        background: #ffffff;
+        color: #0f172a;
+        padding: 12px;
+      }
+      .dark .form-control option {
         background: #0f172a;
         color: #f8fafc;
-        padding: 12px;
       }
 
       .file-drop-area {
-        border: 2px dashed rgba(99, 102, 241, 0.3);
-        border-radius: 16px;
-        padding: 40px 24px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 24px;
         text-align: center;
-        background: linear-gradient(180deg, rgba(30, 41, 59, 0.2) 0%, rgba(15, 23, 42, 0.2) 100%);
+        background: #f1f5f9;
         transition: all 0.3s ease;
         cursor: pointer;
         position: relative;
         overflow: hidden;
+      }
+      .dark .file-drop-area {
+        border: 2px dashed rgba(99, 102, 241, 0.3);
+        background: linear-gradient(180deg, rgba(30, 41, 59, 0.2) 0%, rgba(15, 23, 42, 0.2) 100%);
       }
 
       .file-drop-area::before {
         content: '';
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: radial-gradient(circle at center, rgba(99,102,241,0.1) 0%, transparent 70%);
+        background: radial-gradient(circle at center, rgba(99,102,241,0.05) 0%, transparent 70%);
         opacity: 0;
         transition: opacity 0.3s ease;
+      }
+      .dark .file-drop-area::before {
+        background: radial-gradient(circle at center, rgba(99,102,241,0.1) 0%, transparent 70%);
       }
 
       .file-drop-area:hover {
         border-color: #818cf8;
-        background: linear-gradient(180deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.4) 100%);
+        background: #e2e8f0;
         transform: translateY(-2px);
+      }
+      .dark .file-drop-area:hover {
+        background: linear-gradient(180deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.4) 100%);
       }
       
       .file-drop-area:hover::before {
@@ -245,8 +290,8 @@ export default function UploadNote() {
       }
 
       .file-icon-wrap {
-        width: 72px;
-        height: 72px;
+        width: 56px;
+        height: 56px;
         background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
         border: 1px solid rgba(99, 102, 241, 0.2);
         border-radius: 50%;
@@ -265,22 +310,25 @@ export default function UploadNote() {
 
       .file-drop-text {
         font-weight: 600;
-        color: #f8fafc;
+        color: #0f172a;
         margin-bottom: 6px;
-        font-size: 16px;
+        font-size: 14px;
+      }
+      .dark .file-drop-text {
+        color: #f8fafc;
       }
 
       .file-drop-sub {
-        font-size: 14px;
+        font-size: 12px;
         color: #64748b;
       }
 
       .file-selected {
         margin-top: 16px;
-        padding: 16px 20px;
+        padding: 12px 16px;
         background: linear-gradient(145deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
         border: 1px solid rgba(16, 185, 129, 0.2);
-        border-radius: 14px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         gap: 16px;
@@ -295,8 +343,8 @@ export default function UploadNote() {
       .file-icon-small {
         color: #10b981;
         background: rgba(16, 185, 129, 0.15);
-        padding: 10px;
-        border-radius: 10px;
+        padding: 8px;
+        border-radius: 8px;
       }
 
       .file-info {
@@ -306,12 +354,14 @@ export default function UploadNote() {
 
       .file-name {
         font-weight: 600;
-        color: #e2e8f0;
+        color: #0f172a;
         white-space: nowrap;
-        overflow: hidden;
         text-overflow: ellipsis;
-        font-size: 15px;
-        margin-bottom: 4px;
+        font-size: 14px;
+        margin-bottom: 2px;
+      }
+      .dark .file-name {
+        color: #e2e8f0;
       }
 
       .file-size {
@@ -325,7 +375,7 @@ export default function UploadNote() {
       .grid-2 {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 24px;
+        gap: 16px;
       }
 
       @media (min-width: 768px) {
@@ -336,28 +386,37 @@ export default function UploadNote() {
 
       .type-toggle-container {
         display: flex;
-        gap: 16px;
+        gap: 12px;
       }
 
       .type-toggle-btn {
         flex: 1;
-        padding: 18px;
-        border-radius: 14px;
-        border: 1px solid rgba(71, 85, 105, 0.4);
-        background: rgba(15, 23, 42, 0.4);
-        color: #94a3b8;
+        padding: 14px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #64748b;
         font-weight: 600;
-        font-size: 15px;
+        font-size: 13px;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
         gap: 8px;
       }
+      .dark .type-toggle-btn {
+        border: 1px solid rgba(71, 85, 105, 0.4);
+        background: rgba(15, 23, 42, 0.4);
+        color: #94a3b8;
+      }
 
       .type-toggle-btn:hover:not(.active-free):not(.active-paid) {
+        background: #f1f5f9;
+        border-color: #94a3b8;
+      }
+      .dark .type-toggle-btn:hover:not(.active-free):not(.active-paid) {
         background: rgba(30, 41, 59, 0.6);
         border-color: rgba(99, 102, 241, 0.3);
       }
@@ -390,25 +449,28 @@ export default function UploadNote() {
 
       .price-currency {
         position: absolute;
-        left: 16px;
-        color: #94a3b8;
+        left: 12px;
+        color: #64748b;
         font-weight: 500;
-        font-size: 16px;
+        font-size: 14px;
+      }
+      .dark .price-currency {
+        color: #94a3b8;
       }
 
       .price-input {
-        padding-left: 40px !important;
+        padding-left: 32px !important;
       }
 
       .btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        padding: 16px 28px;
-        border-radius: 14px;
+        gap: 8px;
+        padding: 12px 20px;
+        border-radius: 10px;
         font-weight: 600;
-        font-size: 16px;
+        font-size: 14px;
         text-decoration: none;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         border: none;
@@ -442,10 +504,10 @@ export default function UploadNote() {
         background: rgba(239, 68, 68, 0.1);
         color: #ef4444;
         border: 1px solid rgba(239, 68, 68, 0.2);
-        padding: 8px 12px;
-        font-size: 14px;
+        padding: 6px 10px;
+        font-size: 12px;
         width: auto;
-        border-radius: 10px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -458,9 +520,9 @@ export default function UploadNote() {
 
       .note-footer {
         text-align: center;
-        font-size: 13px;
+        font-size: 12px;
         color: #64748b;
-        margin-top: 24px;
+        margin-top: 16px;
         display: flex;
         align-items: center;
         justify-content: center;

@@ -5,8 +5,8 @@ import toast from 'react-hot-toast';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 
 export default function Login() {
-    const [email, setEmail] = useState('rahul@example.com');
-    const [password, setPassword] = useState('password123');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
@@ -482,58 +482,7 @@ export default function Login() {
                                 {isLoading ? 'Signing in...' : 'Sign in'}
                             </button>
 
-                            {/* Demo Accounts Quick-fill */}
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
-                                <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Quick-Fill Demo Credentials</span>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setEmail('rahul@example.com');
-                                            setPassword('password123');
-                                        }}
-                                        style={{
-                                            padding: '6px 10px',
-                                            background: 'rgba(99,102,241,0.06)',
-                                            border: '1px solid rgba(99,102,241,0.12)',
-                                            borderRadius: '6px',
-                                            color: '#cbd5e1',
-                                            fontSize: '11px',
-                                            cursor: 'pointer',
-                                            transition: 'all 0.2s',
-                                            fontFamily: 'inherit',
-                                            fontWeight: 500,
-                                        }}
-                                        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(99,102,241,0.12)'; }}
-                                        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(99,102,241,0.06)'; }}
-                                    >
-                                        Student Account
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setEmail('admin@noteshub.com');
-                                            setPassword('password123');
-                                        }}
-                                        style={{
-                                            padding: '6px 10px',
-                                            background: 'rgba(168,85,247,0.06)',
-                                            border: '1px solid rgba(168,85,247,0.12)',
-                                            borderRadius: '6px',
-                                            color: '#cbd5e1',
-                                            fontSize: '11px',
-                                            cursor: 'pointer',
-                                            transition: 'all 0.2s',
-                                            fontFamily: 'inherit',
-                                            fontWeight: 500,
-                                        }}
-                                        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(168,85,247,0.12)'; }}
-                                        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(168,85,247,0.06)'; }}
-                                    >
-                                        Admin Account
-                                    </button>
-                                </div>
-                            </div>
+
                         </form>
 
                         {/* Divider */}

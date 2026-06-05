@@ -170,12 +170,7 @@ export default function BrowseNotes() {
         z-index: 1;
       }
 
-      .browse-header {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 32px;
-        gap: 20px;
-      }
+
 
       @media (min-width: 768px) {
         .browse-header {
@@ -192,28 +187,41 @@ export default function BrowseNotes() {
       .browse-title {
         font-size: 40px;
         font-weight: 800;
-        background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
+        background: linear-gradient(135deg, #0f172a 40%, #3b82f6 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         letter-spacing: -0.8px;
         margin: 0;
       }
+      .dark .browse-title {
+        background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
 
       .browse-subtitle {
-        color: #94a3b8;
+        color: #475569;
         margin-top: 6px;
         font-size: 15px;
         font-weight: 500;
         margin-bottom: 0;
       }
+      .dark .browse-subtitle {
+        color: #94a3b8;
+      }
 
       .filter-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .dark .filter-card {
         background: rgba(15, 23, 42, 0.4);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 20px;
-        padding: 24px;
-        margin-bottom: 32px;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
       }
 
@@ -225,7 +233,7 @@ export default function BrowseNotes() {
 
       @media (min-width: 768px) {
         .filter-grid {
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(5, 1fr);
         }
         .filter-search {
           grid-column: span 2;
@@ -248,15 +256,20 @@ export default function BrowseNotes() {
 
       .form-control {
         width: 100%;
-        padding: 14px 16px;
-        background: rgba(15, 23, 42, 0.5);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 14px;
-        color: #ffffff;
-        font-size: 14px;
+        padding: 8px 12px;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        color: #0f172a;
+        font-size: 12px;
         font-weight: 500;
         outline: none;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .dark .form-control {
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #ffffff;
       }
 
       .form-control-search {
@@ -264,6 +277,11 @@ export default function BrowseNotes() {
       }
 
       .form-control:focus {
+        border-color: #818cf8;
+        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+        background: #ffffff;
+      }
+      .dark .form-control:focus {
         border-color: #818cf8;
         box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.02);
         background: rgba(15, 23, 42, 0.8);
@@ -274,10 +292,17 @@ export default function BrowseNotes() {
       }
 
       .form-control::placeholder {
+        color: #64748b;
+      }
+      .dark .form-control::placeholder {
         color: #475569;
       }
       
       .form-control option {
+        background: #ffffff;
+        color: #0f172a;
+      }
+      .dark .form-control option {
         background: #0f172a;
         color: #fff;
       }
@@ -297,7 +322,7 @@ export default function BrowseNotes() {
       .notes-grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 28px;
+        gap: 12px;
       }
 
       @media (min-width: 768px) {
@@ -313,24 +338,29 @@ export default function BrowseNotes() {
       }
 
       .note-card {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.3) 0%, rgba(15, 23, 42, 0.5) 100%);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        border-radius: 22px;
-        padding: 26px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         flex-direction: column;
-        box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         position: relative;
         overflow: hidden;
+      }
+      .dark .note-card {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.3) 0%, rgba(15, 23, 42, 0.5) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.3);
       }
 
       .note-card::before {
         content: '';
         position: absolute;
         inset: 0;
-        border-radius: 22px;
+        border-radius: 12px;
         padding: 1px;
         background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01) 50%, rgba(99,102,241,0.04));
         -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -354,7 +384,7 @@ export default function BrowseNotes() {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 18px;
+        margin-bottom: 12px;
         z-index: 1;
       }
 
@@ -393,18 +423,23 @@ export default function BrowseNotes() {
       }
 
       .wishlist-btn {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
         border-radius: 50%;
         width: 34px;
         height: 34px;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #94a3b8;
+        color: #64748b;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1;
+      }
+      .dark .wishlist-btn {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #94a3b8;
       }
 
       .wishlist-btn:hover {
@@ -423,7 +458,7 @@ export default function BrowseNotes() {
       .note-title {
         font-size: 19px;
         font-weight: 700;
-        color: #ffffff;
+        color: #0f172a;
         margin-bottom: 8px;
         line-height: 1.4;
         display: -webkit-box;
@@ -433,20 +468,32 @@ export default function BrowseNotes() {
         z-index: 1;
         transition: color 0.3s;
       }
+      .dark .note-title {
+        color: #ffffff;
+      }
 
       .note-card:hover .note-title {
+        color: #4f46e5;
+      }
+      .dark .note-card:hover .note-title {
         color: #a5b4fc;
       }
 
       .note-author {
         font-size: 13px;
-        color: #64748b;
+        color: #475569;
         margin-bottom: 18px;
         font-weight: 500;
         z-index: 1;
       }
+      .dark .note-author {
+        color: #64748b;
+      }
       
       .note-author strong {
+        color: #0f172a;
+      }
+      .dark .note-author strong {
         color: #94a3b8;
       }
 
@@ -454,20 +501,22 @@ export default function BrowseNotes() {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 13px;
-        margin-bottom: 22px;
-        padding-top: 14px;
-        border-top: 1px solid rgba(255, 255, 255, 0.04);
-        flex: 1;
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid #e2e8f0;
         z-index: 1;
       }
+      .dark .note-meta-flex {
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
+      }
 
-      .note-rating {
+      .rating-badge {
         display: flex;
         align-items: center;
-        gap: 6px;
-        color: #fbbf24;
+        gap: 4px;
+        color: #eab308;
         font-weight: 600;
+        font-size: 11px;
       }
 
       .note-downloads {
@@ -476,12 +525,13 @@ export default function BrowseNotes() {
         display: flex;
         align-items: center;
         gap: 6px;
+        font-size: 11px;
       }
 
-      .note-actions {
+      .card-actions {
         display: flex;
-        gap: 10px;
-        margin-top: auto;
+        gap: 8px;
+        margin-top: 12px;
         z-index: 1;
       }
 
@@ -489,11 +539,11 @@ export default function BrowseNotes() {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        padding: 11px 16px;
-        border-radius: 12px;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 8px;
         font-weight: 700;
-        font-size: 14px;
+        font-size: 12px;
         text-decoration: none;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         border: 1px solid transparent;
@@ -527,56 +577,62 @@ export default function BrowseNotes() {
       }
 
       .btn-secondary {
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+      }
+      .dark .btn-secondary {
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.08);
         color: #cbd5e1;
       }
 
       .btn-secondary:hover {
+        background: #e2e8f0;
+        border-color: #94a3b8;
+        transform: translateY(-2px);
+        color: #0f172a;
+      }
+      .dark .btn-secondary:hover {
         background: rgba(255, 255, 255, 0.08);
         border-color: rgba(255, 255, 255, 0.15);
-        transform: translateY(-2px);
         color: #ffffff;
-      }
-
-      .btn-upload {
-        background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
-        color: white;
-        box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.4);
-      }
-
-      .btn-upload:hover {
-        background: linear-gradient(135deg, #93c5fd 0%, #818cf8 100%);
-        box-shadow: 0 12px 24px -4px rgba(99, 102, 241, 0.5);
-        transform: translateY(-2px);
       }
 
       .empty-state {
         text-align: center;
-        padding: 70px 24px;
+        padding: 50px 20px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .dark .empty-state {
         background: rgba(15, 23, 42, 0.25);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 20px;
         box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.35);
       }
 
       .empty-icon {
-        font-size: 56px;
-        margin-bottom: 20px;
+        font-size: 48px;
+        margin-bottom: 16px;
       }
 
       .empty-title {
-        font-size: 22px;
+        font-size: 18px;
         font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+      }
+      .dark .empty-title {
         color: #ffffff;
-        margin-bottom: 10px;
       }
 
       .empty-desc {
         color: #64748b;
-        font-size: 15px;
-        max-width: 400px;
+        font-size: 14px;
+        max-width: 350px;
         margin: 0 auto;
       }
     `;
@@ -588,16 +644,6 @@ export default function BrowseNotes() {
       <style>{styles}</style>
       
       <div className="browse-container">
-        <div className="browse-header">
-          <div className="browse-title-group">
-            <h1 className="browse-title">Browse Notes</h1>
-            <p className="browse-subtitle">Discover premium, high-quality academic and course study materials</p>
-          </div>
-          <Link to="/upload" className="btn btn-upload" style={{ flex: 'none', padding: '12px 26px', borderRadius: '14px' }}>
-            + Upload Your Notes
-          </Link>
-        </div>
-
         {/* Filters */}
         <div className="filter-card">
           <div className="filter-grid">
@@ -633,6 +679,34 @@ export default function BrowseNotes() {
               <option value="Free">Free Only</option>
               <option value="Paid">Paid Only</option>
             </select>
+
+            <Link 
+              to="/upload" 
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', 
+                color: '#ffffff', 
+                padding: '8px', 
+                borderRadius: '8px', 
+                fontSize: '12px', 
+                fontWeight: 600, 
+                textDecoration: 'none',
+                boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(99, 102, 241, 0.35)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.25)';
+              }}
+            >
+              + Upload Note
+            </Link>
           </div>
         </div>
 
@@ -675,7 +749,7 @@ export default function BrowseNotes() {
               </p>
 
               <div className="note-meta-flex">
-                <div className="note-rating">
+                <div className="rating-badge">
                   <Star size={14} fill="#fbbf24" stroke="none" /> <span>{note.rating}</span>
                 </div>
                 <div className="note-downloads">
@@ -683,7 +757,7 @@ export default function BrowseNotes() {
                 </div>
               </div>
 
-              <div className="note-actions">
+              <div className="card-actions">
                 <Link to={`/browse/note/${note.id}`} className="btn btn-secondary">
                   View Details
                 </Link>

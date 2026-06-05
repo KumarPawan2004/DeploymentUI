@@ -91,11 +91,16 @@ export default function Checkout() {
       }
 
       .chk-glass-panel {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .dark .chk-glass-panel {
         background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(148, 163, 184, 0.15);
-        border-radius: 16px;
-        padding: 24px;
         box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
       }
 
@@ -103,7 +108,7 @@ export default function Checkout() {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        color: #94a3b8;
+        color: #475569;
         background: transparent;
         border: none;
         font-weight: 500;
@@ -113,8 +118,14 @@ export default function Checkout() {
         transition: color 0.3s ease;
         padding: 0;
       }
+      .dark .chk-back-btn {
+        color: #94a3b8;
+      }
 
       .chk-back-btn:hover {
+        color: #0f172a;
+      }
+      .dark .chk-back-btn:hover {
         color: #f8fafc;
       }
 
@@ -122,28 +133,41 @@ export default function Checkout() {
       .chk-summary-title {
         font-size: 20px;
         font-weight: 700;
-        color: #f8fafc;
+        color: #0f172a;
         margin-bottom: 16px;
+      }
+      .dark .chk-summary-title {
+        color: #f8fafc;
       }
 
       .chk-note-card {
-        background: rgba(15, 23, 42, 0.4);
-        border: 1px solid rgba(255,255,255,0.05);
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
         border-radius: 12px;
         padding: 16px;
         margin-bottom: 20px;
+      }
+      .dark .chk-note-card {
+        background: rgba(15, 23, 42, 0.4);
+        border: 1px solid rgba(255,255,255,0.05);
       }
 
       .chk-note-card h3 {
         font-size: 15px;
         font-weight: 600;
-        color: #f8fafc;
+        color: #0f172a;
         line-height: 1.4;
         margin-bottom: 6px;
+      }
+      .dark .chk-note-card h3 {
+        color: #f8fafc;
       }
 
       .chk-note-card p {
         font-size: 13px;
+        color: #475569;
+      }
+      .dark .chk-note-card p {
         color: #94a3b8;
       }
 
@@ -152,20 +176,30 @@ export default function Checkout() {
         justify-content: space-between;
         align-items: center;
         padding: 8px 0;
-        color: #cbd5e1;
+        color: #334155;
         font-size: 14px;
+      }
+      .dark .chk-price-row {
+        color: #cbd5e1;
       }
 
       .chk-price-row.total {
-        border-top: 1px solid rgba(255,255,255,0.1);
+        border-top: 1px solid #e2e8f0;
         margin-top: 8px;
         padding-top: 16px;
         font-size: 18px;
         font-weight: 700;
+        color: #0f172a;
+      }
+      .dark .chk-price-row.total {
+        border-top: 1px solid rgba(255,255,255,0.1);
         color: #f8fafc;
       }
 
       .chk-total-amount {
+        color: #6366f1;
+      }
+      .dark .chk-total-amount {
         color: #818cf8;
       }
 
@@ -192,15 +226,23 @@ export default function Checkout() {
       .chk-payment-title {
         font-size: 22px;
         font-weight: 800;
-        background: linear-gradient(to right, #818cf8, #c084fc);
+        background: linear-gradient(to right, #6d28d9, #9333ea);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 6px;
       }
+      .dark .chk-payment-title {
+        background: linear-gradient(to right, #818cf8, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
 
       .chk-payment-subtitle {
-        color: #94a3b8;
+        color: #475569;
         font-size: 13px;
+      }
+      .dark .chk-payment-subtitle {
+        color: #94a3b8;
       }
 
       .chk-payment-methods {
@@ -217,20 +259,30 @@ export default function Checkout() {
         gap: 8px;
         padding: 12px;
         border-radius: 12px;
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        color: #94a3b8;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #475569;
         font-weight: 600;
         font-size: 13px;
         cursor: pointer;
         transition: all 0.3s ease;
       }
+      .dark .chk-method-btn {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        color: #94a3b8;
+      }
 
       .chk-method-btn.active {
+        background: #e0e7ff;
+        border-color: #6366f1;
+        color: #6366f1;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+      }
+      .dark .chk-method-btn.active {
         background: rgba(99, 102, 241, 0.15);
         border-color: #818cf8;
         color: #818cf8;
-        box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
       }
 
       .chk-form-group {
@@ -241,26 +293,37 @@ export default function Checkout() {
         display: block;
         font-size: 12px;
         font-weight: 500;
-        color: #cbd5e1;
+        color: #334155;
         margin-bottom: 6px;
+      }
+      .dark .chk-form-label {
+        color: #cbd5e1;
       }
 
       .chk-form-control {
         width: 100%;
         padding: 12px;
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(71, 85, 105, 0.4);
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
         border-radius: 10px;
-        color: #f8fafc;
+        color: #0f172a;
         font-size: 14px;
         outline: none;
         transition: all 0.3s ease;
       }
+      .dark .chk-form-control {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(71, 85, 105, 0.4);
+        color: #f8fafc;
+      }
 
       .chk-form-control:focus {
         border-color: #818cf8;
-        background: rgba(15, 23, 42, 0.8);
+        background: #ffffff;
         box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+      }
+      .dark .chk-form-control:focus {
+        background: rgba(15, 23, 42, 0.8);
       }
 
       .chk-form-row {
@@ -314,7 +377,7 @@ export default function Checkout() {
       .chk-success-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(15, 23, 42, 0.95);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
         border-radius: 16px;
         display: flex;
@@ -323,6 +386,9 @@ export default function Checkout() {
         justify-content: center;
         z-index: 50;
         animation: fadeIn 0.3s ease;
+      }
+      .dark .chk-success-overlay {
+        background: rgba(15, 23, 42, 0.95);
       }
 
       @keyframes fadeIn {
@@ -410,8 +476,8 @@ export default function Checkout() {
                                 <div className="chk-success-icon">
                                     <CheckCircle size={32} />
                                 </div>
-                                <h2 style={{ fontSize: '24px', color: 'white', marginBottom: '8px' }}>Payment Successful!</h2>
-                                <p style={{ color: '#94a3b8', fontSize: '14px' }}>Redirecting to your purchases...</p>
+                                <h2 style={{ fontSize: '24px', color: 'inherit', marginBottom: '8px' }}>Payment Successful!</h2>
+                                <p style={{ color: 'inherit', opacity: 0.8, fontSize: '14px' }}>Redirecting to your purchases...</p>
                             </div>
                         )}
 
