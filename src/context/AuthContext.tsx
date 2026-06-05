@@ -51,6 +51,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             });
 
             if (response.data && response.data.user) {
+                if (response.data.token) {
+                    sessionStorage.setItem('token', response.data.token);
+                }
+                
                 const userData = response.data.user;
                 setUser({
                     id: String(userData.id ?? userData.Id ?? ''),

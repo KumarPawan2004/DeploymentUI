@@ -14,9 +14,13 @@ const api = axios.create({
     },
 });
 
-// Tokens are now handled automatically via HttpOnly cookies by the browser,
-// so we no longer need to manually inject the Authorization header.
+// We use HttpOnly cookies primarily, but we add a fallback to sessionStorage/localStorage
+// for strict CORS/proxy environments where cookies might be dropped by the browser.
 api.interceptors.request.use((config) => {
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
 });
 
