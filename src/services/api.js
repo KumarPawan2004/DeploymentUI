@@ -26,7 +26,8 @@ api.interceptors.response.use(
     (error) => {
         if (error.response?.status === 403) {
             toast.error('Access denied. Admin privileges required.');
-        } else if (error.response?.status === 401) {
+        } else if (error.response?.status === 401 && !error.config?.url?.includes('/auth/me')) {
+            // Only trigger session expired redirect if it wasn't the initial /auth/me check
             sessionStorage.removeItem('token');
             sessionStorage.removeItem('user');
             window.location.href = '/login';
