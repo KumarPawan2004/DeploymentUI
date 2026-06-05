@@ -2,7 +2,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 // Automatically detect environment to avoid hardcoding IP addresses
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+export const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5001/api' // local
     : '/api';                     // production (proxied by Nginx)
 

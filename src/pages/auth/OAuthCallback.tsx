@@ -2,6 +2,13 @@ import { useEffect } from 'react';
 
 export default function OAuthCallback() {
     useEffect(() => {
+        // Read token from URL if it exists (for strict CORS environments fallback)
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+        if (token) {
+            sessionStorage.setItem('token', token);
+        }
+
         // The backend has already set the HttpOnly cookie for us.
         // We just need to redirect to the home page to let AuthContext fetch the user.
         window.location.href = '/';

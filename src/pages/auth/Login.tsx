@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { API_URL } from '../../services/api';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -496,7 +497,10 @@ export default function Login() {
                         <div style={s.socialGrid}>
                             <button
                                 type="button"
-                                onClick={() => { window.location.href = 'http://localhost:5001/api/auth/login-google'; }}
+                                onClick={() => {
+                                    const baseUrl = window.location.origin;
+                                    window.location.href = `${API_URL}/auth/login-google?returnUrl=${encodeURIComponent(baseUrl)}`;
+                                }}
                                 style={s.socialBtn}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
@@ -518,7 +522,10 @@ export default function Login() {
 
                             <button
                                 type="button"
-                                onClick={() => { window.location.href = 'http://localhost:5001/api/auth/login-github'; }}
+                                onClick={() => {
+                                    const baseUrl = window.location.origin;
+                                    window.location.href = `${API_URL}/auth/login-github?returnUrl=${encodeURIComponent(baseUrl)}`;
+                                }}
                                 style={s.socialBtn}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
